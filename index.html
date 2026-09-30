@@ -175,7 +175,6 @@
             font-size: 13px;
         }
 
-        /* Botões de Exportação */
         .btn-export-csv {
             background-color: #0284c7;
             color: white;
@@ -240,7 +239,6 @@
             padding: 6px 10px !important;
         }
 
-        /* MODAL ADMINISTRADORES */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -281,7 +279,6 @@
             text-decoration: underline;
         }
 
-        /* TELA DE PAINEL ADMINISTRATIVO */
         #telaPainelAdmin {
             display: none;
         }
@@ -308,7 +305,6 @@
     <!-- 1. TELA PRINCIPAL DE PEDIDO -->
     <div class="container" id="telaPrincipal">
 
-        <!-- Banner Superior Principal -->
         <div class="banner-gestao">
             <div>
                 <div class="subtitulo-caixa-alta">Acompanhamento Estratégico</div>
@@ -319,7 +315,6 @@
             </div>
         </div>
 
-        <!-- Conteúdo Principal -->
         <div class="card-conteudo">
             <h3 style="margin-top:0; margin-bottom: 20px;">Cadastro de Pedido</h3>
             
@@ -493,10 +488,16 @@
     </div>
 
     <script>
-        const API_REGISTROS = 'http://localhost:3000/api/registros';
-        const API_FUNCIONARIOS = 'http://localhost:3000/api/funcionarios';
-        const API_PRODUTOS = 'http://localhost:3000/api/produtos';
-        const API_LOGIN = 'http://localhost:3000/api/login';
+        // =======================================================
+        // ENDEREÇO DA API NA NUVEM (RENDER)
+        // Substitua pelo endereço real gerado para o seu Web Service no Render
+        // =======================================================
+        const API_BASE_URL = 'https://mg-ped-func-api.onrender.com';
+
+        const API_REGISTROS = `${API_BASE_URL}/api/registros`;
+        const API_FUNCIONARIOS = `${API_BASE_URL}/api/funcionarios`;
+        const API_PRODUTOS = `${API_BASE_URL}/api/produtos`;
+        const API_LOGIN = `${API_BASE_URL}/api/login`;
 
         let funcionariosDB = [];
         let produtosDB = [];
@@ -548,7 +549,6 @@
                 document.getElementById('telaPrincipal').style.display = 'none';
                 document.getElementById('telaPainelAdmin').style.display = 'block';
 
-                // Formatação exata para o Horário de Brasília (America/Sao_Paulo)
                 const agora = new Date();
                 const opcoesData = { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit' };
                 const opcoesHora = { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit', hour12: false };
@@ -586,7 +586,7 @@
             containerExport.style.display = 'none';
 
             try {
-                const res = await fetch(`http://localhost:3000/api/pedidos/filtro?inicio=${encodeURIComponent(inicio)}&fim=${encodeURIComponent(fim)}`);
+                const res = await fetch(`${API_BASE_URL}/api/pedidos/filtro?inicio=${encodeURIComponent(inicio)}&fim=${encodeURIComponent(fim)}`);
                 pedidosFiltradosAtuais = await res.json();
 
                 if (!res.ok) throw new Error(pedidosFiltradosAtuais.error || 'Erro ao consultar pedidos.');
