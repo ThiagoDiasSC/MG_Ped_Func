@@ -1,0 +1,3 @@
+git add .                   
+git commit -m "Conectando o frontend ao backend no Render"
+git push origin main
