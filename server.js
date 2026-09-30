@@ -1,10 +1,14 @@
 const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Servir arquivos estáticos (HTML, CSS, JS) na mesma pasta do servidor
+app.use(express.static(__dirname));
 
 // Configuração de conexão direta com o Supabase usando seus parâmetros
 const pool = new Pool({
@@ -58,7 +62,7 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-// 2. Rota para filtrar pedidos por intervalo de data/hora no Painel Admin (ALTERAÇÃO 1: Consulta Simplificada)
+// 2. Rota para filtrar pedidos por intervalo de data/hora no Painel Admin
 app.get('/api/pedidos/filtro', async (req, res) => {
     const { inicio, fim } = req.query;
 
@@ -144,7 +148,7 @@ app.get('/api/produtos', async (req, res) => {
     }
 });
 
-// 5. Rota para cadastrar o lote na tabela MG_Pedido (ALTERAÇÃO 2: Gravação Exata do Horário de Brasília)
+// 5. Rota para cadastrar o lote na tabela MG_Pedido
 app.post('/api/registros', async (req, res) => {
     const { itens } = req.body;
 
@@ -222,7 +226,12 @@ app.post('/api/registros', async (req, res) => {
     }
 });
 
-// Porta dinâmica para servidores de nuvem (Render, Railway, Heroku) ou 3000 localmente
+// Rota principal para carregar o arquivo HTML
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index_2.html'));
+});
+
+// Porta dinâmica para servidores de nuvem (Render) ou 3000 localmente
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT} conectado ao Supabase`);

@@ -489,10 +489,10 @@
 
     <script>
         // =======================================================
-        // ENDEREÇO DA API NA NUVEM (RENDER)
-        // Substitua pelo endereço real gerado para o seu Web Service no Render
+        // ENDEREÇO DA API DINÂMICO
+        // Utiliza o mesmo domínio/porta em que o servidor está rodando
         // =======================================================
-        const API_BASE_URL = 'https://mg-ped-func-api.onrender.com';
+        const API_BASE_URL = window.location.origin;
 
         const API_REGISTROS = `${API_BASE_URL}/api/registros`;
         const API_FUNCIONARIOS = `${API_BASE_URL}/api/funcionarios`;
