@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão Comercial - MegaGiro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tom Select -->
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+
+    <!-- SheetJS (Para exportar para Excel .xlsx) -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+    <style>
+        :root {
+            --verde-principal: #00823b;
+            --verde-escuro: #005a28;
+            --fundo-pagina: #f5f7f8;
+            --fundo-card: #ffffff;
+            --texto-titulo: #0a192f;
+            --fonte-padrao: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--fundo-pagina);
+            font-family: var(--fonte-padrao);
+            color: var(--texto-titulo);
+            margin: 0;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .banner-gestao {
+            background-color: var(--verde-principal);
+            color: #ffffff;
+            padding: 32px 40px;
+            border-radius: 24px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .banner-gestao .subtitulo-caixa-alta {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .banner-gestao h1 {
+            font-size: 34px;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+
+        .btn-admin {
+            background-color: #ffffff;
+            color: var(--verde-principal);
+            border: none;
+            font-weight: 700;
+            font-size: 14px;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .btn-admin:hover {
+            background-color: #f1f5f9;
+            color: var(--verde-escuro);
+            transform: translateY(-1px);
+        }
+
+        .card-conteudo {
+            background-color: var(--fundo-card);
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .campo-full {
+            grid-column: 1 / -1;
+        }
+
+        input, select, .ts-control {
+            width: 100%;
+            padding: 12px 16px !important;
+            font-size: 14px !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 8px !important;
+            font-family: inherit !important;
+            min-height: 44px !important;
+            background-color: #fff !important;
+        }
+
+        input[readonly] {
+            background-color: #f1f5f9 !important;
+            color: #64748b;
+            cursor: not-allowed;
+        }
+
+        .container-botao {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: center;
+            margin-top: 8px;
+        }
+
+        button.btn-salvar {
+            background-color: var(--verde-principal);
+            color: white;
+            border: none;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 12px 32px;
+            height: 44px;
+            font-size: 15px;
+            transition: background-color 0.2s ease;
+        }
+
+        button.btn-salvar:hover {
+            background-color: var(--verde-escuro);
+        }
+
+        button.btn-finalizar-geral {
+            background-color: var(--verde-principal);
+            color: white;
+            border: none;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 14px 40px;
+            font-size: 16px;
+            transition: background-color 0.2s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        button.btn-finalizar-geral:hover {
+            background-color: var(--verde-escuro);
+        }
+
+        button.btn-remover {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        /* Botões de Exportação */
+        .btn-export-csv {
+            background-color: #0284c7;
+            color: white;
+            border: none;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 10px 20px;
+            font-size: 13px;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-export-csv:hover {
+            background-color: #0369a1;
+        }
+
+        .btn-export-excel {
+            background-color: #16a34a;
+            color: white;
+            border: none;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 10px 20px;
+            font-size: 13px;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-export-excel:hover {
+            background-color: #15803d;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+
+        th, td {
+            border-bottom: 1px solid #e2e8f0;
+            padding: 12px;
+            text-align: left;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 700;
+        }
+
+        .input-qtd {
+            width: 80px !important;
+            padding: 6px 10px !important;
+            min-height: 36px !important;
+            text-align: center;
+        }
+
+        .select-tipo {
+            min-height: 36px !important;
+            padding: 6px 10px !important;
+        }
+
+        /* MODAL ADMINISTRADORES */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(10, 25, 47, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .modal-container {
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .btn-voltar {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0;
+            margin-bottom: 12px;
+            opacity: 0.9;
+        }
+
+        .btn-voltar:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        /* TELA DE PAINEL ADMINISTRATIVO */
+        #telaPainelAdmin {
+            display: none;
+        }
+
+        .btn-sair-admin {
+            background-color: #ffffff;
+            color: #ef4444;
+            border: none;
+            font-weight: 700;
+            font-size: 14px;
+            padding: 10px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-sair-admin:hover {
+            background-color: #fef2f2;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. TELA PRINCIPAL DE PEDIDO -->
+    <div class="container" id="telaPrincipal">
+
+        <!-- Banner Superior Principal -->
+        <div class="banner-gestao">
+            <div>
+                <div class="subtitulo-caixa-alta">Acompanhamento Estratégico</div>
+                <h1>Pedido de Funcionário</h1>
+            </div>
+            <div>
+                <button type="button" class="btn-admin" onclick="abrirModalLogin()">Administradores</button>
+            </div>
+        </div>
+
+        <!-- Conteúdo Principal -->
+        <div class="card-conteudo">
+            <h3 style="margin-top:0; margin-bottom: 20px;">Cadastro de Pedido</h3>
+            
+            <form id="registroForm">
+                <div>
+                    <select id="nome" required placeholder="Digite para buscar o funcionário...">
+                        <option value="">Carregando funcionários...</option>
+                    </select>
+                </div>
+
+                <input type="text" id="fun_cod" placeholder="Código do Funcionário" readonly required>
+
+                <select id="revenda" required>
+                    <option value="">Selecione a Revenda</option>
+                    <option value="CORONEL FABRICIANO">CORONEL FABRICIANO</option>
+                    <option value="MANHUAÇU">MANHUAÇU</option> 
+                    <option value="GOVERNADOR VALADARES">GOVERNADOR VALADARES</option>
+                    <option value="TEOFILO OTONI">TEOFILO OTONI</option>  
+                    <option value="ITAOBIM">ITAOBIM</option>   
+                    <option value="JOÃO MONLEVADE">JOÃO MONLEVADE</option>                          
+                </select>
+
+                <select id="pagamento" required>
+                    <option value="">Selecione a Forma de Pagamento</option>
+                    <option value="PIX">PIX</option>
+                    <option value="BOLETO">BOLETO</option>                         
+                </select>
+
+                <div class="campo-full">
+                    <select id="produto" required placeholder="Digite para buscar o produto...">
+                        <option value="">Carregando produtos...</option>
+                    </select>
+                </div>
+
+                <input type="text" id="prod_cod" placeholder="Código do Produto (Cod_prod)" readonly required>
+                <input type="text" id="qtd_cx" placeholder="Quantidade por Caixa (QTD)" readonly required>
+                <input type="text" id="val_cx" placeholder="Valor por Caixa (Val_cx)" readonly required>
+                <input type="text" id="val_uni" placeholder="Valor Unitário (val_uni)" readonly required>
+                
+                <div class="container-botao">
+                    <button type="submit" class="btn-salvar">Selecionar Produto</button>
+                </div>
+            </form>
+
+            <h3 style="margin-top: 32px;">Finalização de pedido</h3>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cód. Func.</th>
+                            <th>Revenda</th>
+                            <th>Forma de Pagamento</th>
+                            <th>Cód. Produto</th>
+                            <th>Descrição do Produto</th>
+                            <th>Tipo</th>
+                            <th>Quantidade</th>
+                            <th style="width: 50px; text-align: center;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaFinalizacao">
+                        <tr id="linhaVazia">
+                            <td colspan="8" style="text-align: center; color: #94a3b8; padding: 24px;">Nenhum produto selecionado. Preencha os campos acima e clique em "Selecionar Produto".</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="container-botao" style="margin-top: 28px;">
+                <button type="button" id="btnFinalizarGeral" class="btn-finalizar-geral" onclick="finalizarPedidoGeral()">Finalizar o pedido</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 2. TELA / MODAL DE LOGIN -->
+    <div class="modal-overlay" id="modalAdmin">
+        <div class="modal-container">
+            <button type="button" class="btn-voltar" onclick="fecharModalLogin()">← Voltar ao pedido</button>
+
+            <div class="banner-gestao" style="margin-bottom: 16px;">
+                <div>
+                    <div class="subtitulo-caixa-alta">Acesso Restrito</div>
+                    <h1 style="font-size: 26px;">Autenticação</h1>
+                </div>
+            </div>
+
+            <div class="card-conteudo">
+                <form id="formLoginAdmin" style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 0;">
+                    <div>
+                        <label style="font-size: 13px; font-weight: 700; color: #475569; display: block; margin-bottom: 6px;">Usuário ou E-mail</label>
+                        <input type="text" id="adminUsuario" placeholder="Digite seu usuário ou email" required>
+                    </div>
+
+                    <div>
+                        <label style="font-size: 13px; font-weight: 700; color: #475569; display: block; margin-bottom: 6px;">Senha</label>
+                        <input type="password" id="adminSenha" placeholder="Digite sua senha" required>
+                    </div>
+
+                    <div style="margin-top: 8px;">
+                        <button type="submit" id="btnEntrarAdmin" class="btn-salvar" style="width: 100%;">Entrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. TELA DE PAINEL ADMINISTRATIVO -->
+    <div class="container" id="telaPainelAdmin">
+
+        <div class="banner-gestao">
+            <div>
+                <div class="subtitulo-caixa-alta">Acompanhamento Estratégico</div>
+                <h1>Painel Administrativo</h1>
+            </div>
+            <div>
+                <button type="button" class="btn-sair-admin" onclick="sairPainelAdmin()">Sair</button>
+            </div>
+        </div>
+
+        <div class="card-conteudo">
+            <h3 style="margin-top:0; margin-bottom: 20px;">Filtros de Gestão</h3>
+            
+            <form id="formFiltroAdmin" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 24px;">
+                <div>
+                    <label style="font-size: 13px; font-weight: 700; color: #475569; display: block; margin-bottom: 6px;">Data e Hora Inicial:</label>
+                    <input type="datetime-local" id="dataHoraInicialAdmin" required>
+                </div>
+
+                <div>
+                    <label style="font-size: 13px; font-weight: 700; color: #475569; display: block; margin-bottom: 6px;">Data e Hora Final:</label>
+                    <input type="datetime-local" id="dataHoraFinalAdmin" required>
+                </div>
+
+                <div class="container-botao">
+                    <button type="submit" class="btn-salvar">Filtrar Pedidos</button>
+                </div>
+            </form>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 32px; margin-bottom: 12px;">
+                <h3 style="margin: 0;">Resultados da Consulta</h3>
+                <div id="containerExportacao" style="display: none; gap: 10px;">
+                    <button type="button" class="btn-export-csv" onclick="exportarCSV()">Exportar CSV</button>
+                    <button type="button" class="btn-export-excel" onclick="exportarExcel()">Exportar Excel</button>
+                </div>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nº Pedido</th>
+                            <th>Data/Hora Inserção</th>
+                            <th>Cód. Func.</th>
+                            <th>Nome Funcionário</th>
+                            <th>Revenda</th>
+                            <th>Pagamento</th>
+                            <th>Cód. Prod.</th>
+                            <th>Tipo</th>
+                            <th>Qtd.</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaResultadosAdmin">
+                        <tr>
+                            <td colspan="9" style="text-align: center; color: #94a3b8; padding: 24px;">Selecione o intervalo de datas acima e clique em "Filtrar Pedidos".</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const API_REGISTROS = 'http://localhost:3000/api/registros';
+        const API_FUNCIONARIOS = 'http://localhost:3000/api/funcionarios';
+        const API_PRODUTOS = 'http://localhost:3000/api/produtos';
+        const API_LOGIN = 'http://localhost:3000/api/login';
+
+        let funcionariosDB = [];
+        let produtosDB = [];
+        let tomSelectFuncionario = null;
+        let tomSelectProduto = null;
+        let itensSelecionados = [];
+        let contadorItens = 0;
+        let pedidosFiltradosAtuais = [];
+
+        function abrirModalLogin() {
+            document.getElementById('modalAdmin').style.display = 'flex';
+        }
+
+        function fecharModalLogin() {
+            document.getElementById('modalAdmin').style.display = 'none';
+            document.getElementById('formLoginAdmin').reset();
+        }
+
+        function sairPainelAdmin() {
+            document.getElementById('telaPainelAdmin').style.display = 'none';
+            document.getElementById('telaPrincipal').style.display = 'block';
+        }
+
+        // Login de Administrador
+        document.getElementById('formLoginAdmin').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const usuario = document.getElementById('adminUsuario').value;
+            const senha = document.getElementById('adminSenha').value;
+            const btn = document.getElementById('btnEntrarAdmin');
+
+            btn.disabled = true;
+            btn.textContent = 'Verificando...';
+
+            try {
+                const res = await fetch(API_LOGIN, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ usuario, senha })
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    throw new Error(data.error || 'Erro de autenticação.');
+                }
+
+                fecharModalLogin();
+                document.getElementById('telaPrincipal').style.display = 'none';
+                document.getElementById('telaPainelAdmin').style.display = 'block';
+
+                // Formatação exata para o Horário de Brasília (America/Sao_Paulo)
+                const agora = new Date();
+                const opcoesData = { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit' };
+                const opcoesHora = { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit', hour12: false };
+
+                const dataStr = agora.toLocaleDateString('pt-BR', opcoesData).split('/').reverse().join('-');
+                const horaStr = agora.toLocaleTimeString('pt-BR', opcoesHora);
+
+                document.getElementById('dataHoraInicialAdmin').value = `${dataStr}T00:00`;
+                document.getElementById('dataHoraFinalAdmin').value = `${dataStr}T${horaStr}`;
+
+            } catch (error) {
+                alert(error.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Entrar';
+            }
+        });
+
+        // Filtro por Data/Hora no Painel Admin
+        document.getElementById('formFiltroAdmin').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const inicio = document.getElementById('dataHoraInicialAdmin').value;
+            const fim = document.getElementById('dataHoraFinalAdmin').value;
+
+            if (new Date(inicio) > new Date(fim)) {
+                alert('Atenção: A data e hora inicial não pode ser maior do que a data e hora final.');
+                return;
+            }
+
+            const tbody = document.getElementById('tabelaResultadosAdmin');
+            const containerExport = document.getElementById('containerExportacao');
+            
+            tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #64748b; padding: 24px;">Buscando pedidos...</td></tr>`;
+            containerExport.style.display = 'none';
+
+            try {
+                const res = await fetch(`http://localhost:3000/api/pedidos/filtro?inicio=${encodeURIComponent(inicio)}&fim=${encodeURIComponent(fim)}`);
+                pedidosFiltradosAtuais = await res.json();
+
+                if (!res.ok) throw new Error(pedidosFiltradosAtuais.error || 'Erro ao consultar pedidos.');
+
+                if (pedidosFiltradosAtuais.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #94a3b8; padding: 24px;">Nenhum pedido encontrado para o intervalo selecionado.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                pedidosFiltradosAtuais.forEach(p => {
+                    const tr = document.createElement('tr');
+                    const numPedForm = String(p.Num_Ped).padStart(6, '0');
+
+                    tr.innerHTML = `
+                        <td><strong>${numPedForm}</strong></td>
+                        <td>${p.DT_Ped}</td>
+                        <td>${p.Cod_Func}</td>
+                        <td>${p.Nome_Func}</td>
+                        <td>${p.MG_Rev}</td>
+                        <td>${p.Form_Pag}</td>
+                        <td>${p.Cod_Prod}</td>
+                        <td>${p.Tipo_Ped}</td>
+                        <td>${p.QTD_Ped}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+                containerExport.style.display = 'flex';
+
+            } catch (error) {
+                alert(error.message);
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #ef4444; padding: 24px;">Erro ao carregar os dados.</td></tr>`;
+            }
+        });
+
+        // Exportação CSV
+        function exportarCSV() {
+            if (pedidosFiltradosAtuais.length === 0) return;
+
+            const cabecalhos = ['Num_Ped', 'DT_Ped', 'Cod_Func', 'Nome_Func', 'MG_Rev', 'Form_Pag', 'Cod_Prod', 'Tipo_Ped', 'QTD_Ped'];
+            let csvContent = '\uFEFF' + cabecalhos.join(';') + '\n';
+
+            pedidosFiltradosAtuais.forEach(p => {
+                const linha = [
+                    `"${String(p.Num_Ped).padStart(6, '0')}"`,
+                    `"${p.DT_Ped}"`,
+                    `"${p.Cod_Func}"`,
+                    `"${p.Nome_Func}"`,
+                    `"${p.MG_Rev}"`,
+                    `"${p.Form_Pag}"`,
+                    `"${p.Cod_Prod}"`,
+                    `"${p.Tipo_Ped}"`,
+                    `"${p.QTD_Ped}"`
+                ];
+                csvContent += linha.join(';') + '\n';
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', `Pedidos_MegaGiro_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Exportação Excel (.xlsx)
+        function exportarExcel() {
+            if (pedidosFiltradosAtuais.length === 0) return;
+
+            const dadosExcel = pedidosFiltradosAtuais.map(p => ({
+                'Nº Pedido': String(p.Num_Ped).padStart(6, '0'),
+                'Data/Hora Inserção': p.DT_Ped,
+                'Cód. Funcionario': p.Cod_Func,
+                'Nome Funcionário': p.Nome_Func,
+                'Revenda': p.MG_Rev,
+                'Forma de Pagamento': p.Form_Pag,
+                'Cód. Produto': p.Cod_Prod,
+                'Tipo': p.Tipo_Ped,
+                'Quantidade': p.QTD_Ped
+            }));
+
+            const worksheet = XLSX.utils.json_to_sheet(dadosExcel);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Pedidos');
+
+            XLSX.writeFile(workbook, `Pedidos_MegaGiro_${new Date().toISOString().slice(0,10)}.xlsx`);
+        }
+
+        // Carregamento Inicial dos Dropdowns
+        async function inicializarFuncionarios() {
+            try {
+                const res = await fetch(API_FUNCIONARIOS);
+                funcionariosDB = await res.json();
+
+                const selectNome = document.getElementById('nome');
+                selectNome.innerHTML = '<option value="">Digite para buscar o funcionário...</option>';
+                
+                funcionariosDB.forEach(f => {
+                    const option = document.createElement('option');
+                    option.value = f.nome;
+                    option.textContent = f.nome;
+                    selectNome.appendChild(option);
+                });
+
+                if (tomSelectFuncionario) tomSelectFuncionario.destroy();
+
+                tomSelectFuncionario = new TomSelect('#nome', {
+                    create: false,
+                    maxOptions: null,
+                    sortField: { field: "text", direction: "asc" },
+                    onChange: function(value) {
+                        const funcionario = funcionariosDB.find(f => f.nome === value);
+                        document.getElementById('fun_cod').value = funcionario ? funcionario.fun_cod : '';
+                    }
+                });
+            } catch (error) {
+                console.error('Erro ao carregar funcionários:', error);
+            }
+        }
+
+        async function inicializarProdutos() {
+            try {
+                const res = await fetch(API_PRODUTOS);
+                if (!res.ok) throw new Error('Erro na resposta do servidor');
+                
+                produtosDB = await res.json();
+
+                const selectProduto = document.getElementById('produto');
+                selectProduto.innerHTML = '<option value="">Digite para buscar o produto...</option>';
+                
+                produtosDB.forEach(p => {
+                    if (p.produto) {
+                        const option = document.createElement('option');
+                        option.value = p.produto;
+                        option.textContent = p.produto;
+                        selectProduto.appendChild(option);
+                    }
+                });
+
+                if (tomSelectProduto) tomSelectProduto.destroy();
+
+                tomSelectProduto = new TomSelect('#produto', {
+                    create: false,
+                    maxOptions: null,
+                    sortField: { field: "text", direction: "asc" },
+                    onChange: function(value) {
+                        const prod = produtosDB.find(p => p.produto === value);
+                        
+                        document.getElementById('prod_cod').value = prod ? (prod.prod_cod || '') : '';
+                        document.getElementById('qtd_cx').value = prod ? (prod.qtd_cx || '') : '';
+                        document.getElementById('val_cx').value = prod ? (prod.val_cx || '') : '';
+                        document.getElementById('val_uni').value = prod ? (prod.val_uni || '') : '';
+                    }
+                });
+            } catch (error) {
+                console.error('Erro ao carregar produtos:', error);
+            }
+        }
+
+        // Inserção do Produto na Tabela de Finalização
+        document.getElementById('registroForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const fun_cod = document.getElementById('fun_cod').value;
+            const nome = document.getElementById('nome').value;
+            const revenda = document.getElementById('revenda').value;
+            const pagamento = document.getElementById('pagamento').value;
+            const produto = document.getElementById('produto').value;
+            const prod_cod = document.getElementById('prod_cod').value;
+            const val_cx = document.getElementById('val_cx').value;
+            const val_uni = document.getElementById('val_uni').value;
+
+            if (!nome || !produto) {
+                alert('Por favor, selecione um funcionário e um produto.');
+                return;
+            }
+
+            const linhaVazia = document.getElementById('linhaVazia');
+            if (linhaVazia) linhaVazia.remove();
+
+            contadorItens++;
+            const idLinha = `item_${contadorItens}`;
+
+            const item = {
+                idLinha,
+                contador: contadorItens,
+                nome,
+                fun_cod,
+                revenda,
+                pagamento,
+                produto,
+                prod_cod,
+                val_cx,
+                val_uni
+            };
+
+            itensSelecionados.push(item);
+
+            const tbody = document.getElementById('tabelaFinalizacao');
+            const tr = document.createElement('tr');
+            tr.id = idLinha;
+
+            tr.innerHTML = `
+                <td><strong>${fun_cod}</strong></td>
+                <td>${revenda}</td>
+                <td>${pagamento}</td>
+                <td><strong>${prod_cod}</strong></td>
+                <td>${produto}</td>
+                <td>
+                    <select class="select-tipo" id="tipo_${contadorItens}">
+                        <option value="Caixa">Caixa</option>
+                        <option value="Unidade">Unidade</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="number" class="input-qtd" id="qtd_${contadorItens}" min="1" max="999" maxlength="3" value="1" oninput="if(this.value.length > 3) this.value = this.value.slice(0, 3);">
+                </td>
+                <td style="text-align: center;">
+                    <button type="button" class="btn-remover" title="Remover item" onclick="removerLinha('${idLinha}')">✕</button>
+                </td>
+            `;
+
+            tbody.appendChild(tr);
+
+            if (tomSelectProduto) tomSelectProduto.clear();
+            document.getElementById('prod_cod').value = '';
+            document.getElementById('qtd_cx').value = '';
+            document.getElementById('val_cx').value = '';
+            document.getElementById('val_uni').value = '';
+        });
+
+        function removerLinha(idLinha) {
+            const tr = document.getElementById(idLinha);
+            if (tr) tr.remove();
+
+            itensSelecionados = itensSelecionados.filter(i => i.idLinha !== idLinha);
+
+            const tbody = document.getElementById('tabelaFinalizacao');
+            if (tbody.children.length === 0) {
+                tbody.innerHTML = `
+                    <tr id="linhaVazia">
+                        <td colspan="8" style="text-align: center; color: #94a3b8; padding: 24px;">Nenhum produto selecionado. Preencha os campos acima e clique em "Selecionar Produto".</td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Envios do Pedido Lote
+        async function finalizarPedidoGeral() {
+            if (itensSelecionados.length === 0) {
+                alert('Adicione pelo menos um produto ao pedido antes de finalizar.');
+                return;
+            }
+
+            const loteItens = [];
+
+            for (const item of itensSelecionados) {
+                const tipo = document.getElementById(`tipo_${item.contador}`).value;
+                const qtd_pedido = parseInt(document.getElementById(`qtd_${item.contador}`).value, 10);
+
+                if (!qtd_pedido || qtd_pedido <= 0) {
+                    alert(`Por favor, informe uma quantidade válida para o produto: ${item.produto}`);
+                    return;
+                }
+
+                let valorUnitarioOuCaixa = 0;
+                let strVal = (tipo === 'Caixa' ? item.val_cx : item.val_uni) || '0';
+                
+                strVal = String(strVal).replace('R$', '').replace(/\s/g, '').replace(/\./g, '').replace(',', '.').trim();
+                valorUnitarioOuCaixa = parseFloat(strVal) || 0;
+
+                const valPedTotal = Number((valorUnitarioOuCaixa * qtd_pedido).toFixed(2));
+
+                loteItens.push({
+                    Nome_Func: item.nome,
+                    Cod_Func: item.fun_cod,
+                    MG_Rev: item.revenda,
+                    Form_Pag: item.pagamento,
+                    Cod_Prod: item.prod_cod,
+                    Tipo_Ped: tipo,
+                    QTD_Ped: qtd_pedido,
+                    Val_Ped: valPedTotal
+                });
+            }
+
+            const btn = document.getElementById('btnFinalizarGeral');
+            btn.disabled = true;
+            btn.textContent = 'Enviando pedido...';
+
+            try {
+                const res = await fetch(API_REGISTROS, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ itens: loteItens })
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    throw new Error(data.error || 'Erro ao salvar o pedido no banco.');
+                }
+
+                const numPedFormatado = String(data.num_ped).padStart(6, '0');
+
+                alert(`Sucesso! Pedido nº ${numPedFormatado} cadastrado com ${loteItens.length} item(ns).`);
+
+                document.getElementById('registroForm').reset();
+                if (tomSelectFuncionario) tomSelectFuncionario.clear();
+                if (tomSelectProduto) tomSelectProduto.clear();
+
+                itensSelecionados = [];
+                const tbody = document.getElementById('tabelaFinalizacao');
+                tbody.innerHTML = `
+                    <tr id="linhaVazia">
+                        <td colspan="8" style="text-align: center; color: #94a3b8; padding: 24px;">Nenhum produto selecionado. Preencha os campos acima e clique em "Selecionar Produto".</td>
+                    </tr>
+                `;
+            } catch (error) {
+                console.error(error);
+                alert(`Erro ao gravar o pedido: ${error.message}`);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Finalizar o pedido';
+            }
+        }
+
+        // Inicialização
+        inicializarFuncionarios();
+        inicializarProdutos();
+    </script>
+</body>
+</html>
