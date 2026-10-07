@@ -105,6 +105,14 @@
             margin-bottom: 32px;
         }
 
+        /* Linha do Funcionário e Código (3fr 1fr no computador) */
+        .linha-funcionario {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 16px;
+        }
+
         .campo-grupo {
             display: flex;
             flex-direction: column;
@@ -346,8 +354,8 @@
                 border-radius: 16px;
             }
 
-            /* Força o formulário a empilhar 1 item em cima do outro */
-            form.grid-form, #formFiltroAdmin {
+            /* Força o formulário e suas linhas a empilharem 1 item por linha no celular */
+            form.grid-form, #formFiltroAdmin, .linha-funcionario {
                 display: flex !important;
                 flex-direction: column !important;
                 gap: 14px !important;
@@ -364,7 +372,7 @@
             }
 
             input, select, .ts-control {
-                font-size: 16px !important; /* Previne zoom automático em telas mobile */
+                font-size: 16px !important;
                 height: 48px !important;
             }
 
@@ -412,21 +420,22 @@
             
             <form id="registroForm" class="grid-form">
                 
-                <!-- 1. Funcionário -->
-                <div class="campo-grupo campo-full">
-                    <label for="nome">Funcionário</label>
-                    <select id="nome" required placeholder="Digite para buscar o funcionário...">
-                        <option value="">Carregando funcionários...</option>
-                    </select>
+                <!-- Linha 1 no PC: Funcionário (Menor) + Código do Funcionário ao Lado -->
+                <div class="linha-funcionario">
+                    <div class="campo-grupo">
+                        <label for="nome">Funcionário</label>
+                        <select id="nome" required placeholder="Digite para buscar o funcionário...">
+                            <option value="">Carregando funcionários...</option>
+                        </select>
+                    </div>
+
+                    <div class="campo-grupo">
+                        <label for="fun_cod">Código do Funcionário</label>
+                        <input type="text" id="fun_cod" placeholder="Código do Funcionário" readonly required>
+                    </div>
                 </div>
 
-                <!-- 2. Código do Funcionário -->
-                <div class="campo-grupo">
-                    <label for="fun_cod">Código do Funcionário</label>
-                    <input type="text" id="fun_cod" placeholder="Código do Funcionário" readonly required>
-                </div>
-
-                <!-- 3. Revenda -->
+                <!-- Linha 2 no PC: Revenda + Forma de Pagamento em Paralelo -->
                 <div class="campo-grupo">
                     <label for="revenda">Revenda</label>
                     <select id="revenda" required>
@@ -440,7 +449,6 @@
                     </select>
                 </div>
 
-                <!-- 4. Forma de Pagamento -->
                 <div class="campo-grupo">
                     <label for="pagamento">Forma de Pagamento</label>
                     <select id="pagamento" required>
@@ -450,7 +458,7 @@
                     </select>
                 </div>
 
-                <!-- 5. Produto -->
+                <!-- Linha 3 no PC: Produto (Largura Total) -->
                 <div class="campo-grupo campo-full">
                     <label for="produto">Produto</label>
                     <select id="produto" required placeholder="Digite para buscar o produto...">
@@ -458,7 +466,7 @@
                     </select>
                 </div>
 
-                <!-- 6. Detalhes do Produto -->
+                <!-- Linhas 4 e 5 no PC: Detalhes dos Produtos -->
                 <div class="campo-grupo">
                     <label for="prod_cod">Código do Produto</label>
                     <input type="text" id="prod_cod" placeholder="Código do Produto (Cod_prod)" readonly required>
@@ -613,10 +621,6 @@
     </div>
 
     <script>
-        // =======================================================
-        // ENDEREÇO DA API DINÂMICO
-        // Utiliza o mesmo domínio/porta em que o servidor está rodando
-        // =======================================================
         const API_BASE_URL = window.location.origin;
 
         const API_REGISTROS = `${API_BASE_URL}/api/registros`;
