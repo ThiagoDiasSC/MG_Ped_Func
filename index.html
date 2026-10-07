@@ -16,350 +16,381 @@
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
     <style>
-    :root {
-        --verde-principal: #00823b;
-        --verde-escuro: #005a28;
-        --fundo-pagina: #f5f7f8;
-        --fundo-card: #ffffff;
-        --texto-titulo: #0a192f;
-        --fonte-padrao: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    }
+        :root {
+            --verde-principal: #00823b;
+            --verde-escuro: #005a28;
+            --fundo-pagina: #f5f7f8;
+            --fundo-card: #ffffff;
+            --texto-titulo: #0a192f;
+            --fonte-padrao: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
 
-    * {
-        box-sizing: border-box;
-    }
+        * {
+            box-sizing: border-box;
+        }
 
-    body {
-        background-color: var(--fundo-pagina);
-        font-family: var(--fonte-padrao);
-        color: var(--texto-titulo);
-        margin: 0;
-        padding: 24px;
-    }
-
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-
-    .banner-gestao {
-        background-color: var(--verde-principal);
-        color: #ffffff;
-        padding: 32px 40px;
-        border-radius: 24px;
-        margin-bottom: 24px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 16px;
-    }
-
-    .banner-gestao .subtitulo-caixa-alta {
-        font-size: 13px;
-        font-weight: 700;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-        opacity: 0.9;
-        margin-bottom: 8px;
-    }
-
-    .banner-gestao h1 {
-        font-size: 34px;
-        font-weight: 800;
-        margin: 0;
-        letter-spacing: -0.5px;
-    }
-
-    .btn-admin {
-        background-color: #ffffff;
-        color: var(--verde-principal);
-        border: none;
-        font-weight: 700;
-        font-size: 14px;
-        padding: 12px 24px;
-        border-radius: 12px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        white-space: nowrap;
-    }
-
-    .btn-admin:hover {
-        background-color: #f1f5f9;
-        color: var(--verde-escuro);
-        transform: translateY(-1px);
-    }
-
-    .card-conteudo {
-        background-color: var(--fundo-card);
-        border-radius: 24px;
-        padding: 32px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
-
-    form {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
-        margin-bottom: 32px;
-    }
-
-    .campo-full {
-        grid-column: 1 / -1;
-    }
-
-    input, select, .ts-control {
-        width: 100%;
-        padding: 12px 16px !important;
-        font-size: 14px !important;
-        border: 1px solid #cbd5e1 !important;
-        border-radius: 8px !important;
-        font-family: inherit !important;
-        min-height: 44px !important;
-        background-color: #fff !important;
-    }
-
-    input[readonly] {
-        background-color: #f1f5f9 !important;
-        color: #64748b;
-        cursor: not-allowed;
-    }
-
-    .container-botao {
-        grid-column: 1 / -1;
-        display: flex;
-        justify-content: center;
-        margin-top: 8px;
-    }
-
-    button.btn-salvar {
-        background-color: var(--verde-principal);
-        color: white;
-        border: none;
-        font-weight: 700;
-        border-radius: 8px;
-        cursor: pointer;
-        padding: 12px 32px;
-        height: 44px;
-        font-size: 15px;
-        transition: background-color 0.2s ease;
-    }
-
-    button.btn-salvar:hover {
-        background-color: var(--verde-escuro);
-    }
-
-    button.btn-finalizar-geral {
-        background-color: var(--verde-principal);
-        color: white;
-        border: none;
-        font-weight: 700;
-        border-radius: 8px;
-        cursor: pointer;
-        padding: 14px 40px;
-        font-size: 16px;
-        transition: background-color 0.2s ease;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    }
-
-    button.btn-finalizar-geral:hover {
-        background-color: var(--verde-escuro);
-    }
-
-    button.btn-remover {
-        background-color: #ef4444;
-        color: white;
-        border: none;
-        padding: 6px 10px;
-        border-radius: 6px;
-        font-weight: 600;
-        cursor: pointer;
-        font-size: 13px;
-    }
-
-    .btn-export-csv {
-        background-color: #0284c7;
-        color: white;
-        border: none;
-        font-weight: 700;
-        border-radius: 8px;
-        cursor: pointer;
-        padding: 10px 20px;
-        font-size: 13px;
-        transition: background-color 0.2s ease;
-    }
-
-    .btn-export-csv:hover {
-        background-color: #0369a1;
-    }
-
-    .btn-export-excel {
-        background-color: #16a34a;
-        color: white;
-        border: none;
-        font-weight: 700;
-        border-radius: 8px;
-        cursor: pointer;
-        padding: 10px 20px;
-        font-size: 13px;
-        transition: background-color 0.2s ease;
-    }
-
-    .btn-export-excel:hover {
-        background-color: #15803d;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 12px;
-    }
-
-    th, td {
-        border-bottom: 1px solid #e2e8f0;
-        padding: 12px;
-        text-align: left;
-        font-size: 13px;
-        vertical-align: middle;
-        white-space: nowrap;
-    }
-
-    th {
-        background-color: #f8fafc;
-        color: #475569;
-        font-weight: 700;
-    }
-
-    .input-qtd {
-        width: 80px !important;
-        padding: 6px 10px !important;
-        min-height: 36px !important;
-        text-align: center;
-    }
-
-    .select-tipo {
-        min-height: 36px !important;
-        padding: 6px 10px !important;
-    }
-
-    .modal-overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(10, 25, 47, 0.6);
-        backdrop-filter: blur(4px);
-        z-index: 999;
-        align-items: center;
-        justify-content: center;
-        padding: 16px;
-    }
-
-    .modal-container {
-        max-width: 500px;
-        width: 100%;
-    }
-
-    .btn-voltar {
-        background: transparent;
-        border: none;
-        color: #ffffff;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        padding: 0;
-        margin-bottom: 12px;
-        opacity: 0.9;
-    }
-
-    .btn-voltar:hover {
-        opacity: 1;
-        text-decoration: underline;
-    }
-
-    #telaPainelAdmin {
-        display: none;
-    }
-
-    .btn-sair-admin {
-        background-color: #ffffff;
-        color: #ef4444;
-        border: none;
-        font-weight: 700;
-        font-size: 14px;
-        padding: 10px 20px;
-        border-radius: 12px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-
-    .btn-sair-admin:hover {
-        background-color: #fef2f2;
-    }
-
-    /* =======================================================
-       REGRAS DE RESPONSIVIDADE (SMARTPHONES E TABLETS)
-       ======================================================= */
-    @media (max-width: 768px) {
         body {
-            padding: 12px;
+            background-color: var(--fundo-pagina);
+            font-family: var(--fonte-padrao);
+            color: var(--texto-titulo);
+            margin: 0;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .banner-gestao {
-            flex-direction: column;
-            align-items: flex-start;
-            padding: 20px 24px;
-            border-radius: 16px;
+            background-color: var(--verde-principal);
+            color: #ffffff;
+            padding: 32px 40px;
+            border-radius: 24px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .banner-gestao .subtitulo-caixa-alta {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            opacity: 0.9;
+            margin-bottom: 8px;
         }
 
         .banner-gestao h1 {
-            font-size: 24px;
+            font-size: 34px;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -0.5px;
         }
 
-        .btn-admin, .btn-sair-admin {
-            width: 100%;
-            margin-top: 8px;
-            text-align: center;
+        .btn-admin {
+            background-color: #ffffff;
+            color: var(--verde-principal);
+            border: none;
+            font-weight: 700;
+            font-size: 14px;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            white-space: nowrap;
+        }
+
+        .btn-admin:hover {
+            background-color: #f1f5f9;
+            color: var(--verde-escuro);
+            transform: translateY(-1px);
         }
 
         .card-conteudo {
-            padding: 20px 16px;
-            border-radius: 16px;
+            background-color: var(--fundo-card);
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
-        /* Faz os formulários passarem de 2 colunas para 1 coluna */
-        form, #formFiltroAdmin {
-            grid-template-columns: 1fr !important;
-            gap: 12px;
+        /* Estrutura do Formulário Desktop */
+        form.grid-form {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
         }
 
-        button.btn-salvar, button.btn-finalizar-geral {
-            width: 100%;
-        }
-
-        /* Ajustes dos botões do relatório na tela Admin */
-        #containerExportacao {
+        .campo-grupo {
+            display: flex;
             flex-direction: column;
+            gap: 6px;
+        }
+
+        .campo-grupo label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #475569;
+        }
+
+        .campo-full {
+            grid-column: 1 / -1;
+        }
+
+        input, select, .ts-control {
             width: 100%;
+            padding: 12px 16px !important;
+            font-size: 14px !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 8px !important;
+            font-family: inherit !important;
+            min-height: 46px !important;
+            background-color: #fff !important;
+        }
+
+        input[readonly] {
+            background-color: #f1f5f9 !important;
+            color: #64748b;
+            cursor: not-allowed;
+        }
+
+        .container-botao {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: center;
+            margin-top: 8px;
+        }
+
+        button.btn-salvar {
+            background-color: var(--verde-principal);
+            color: white;
+            border: none;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 12px 32px;
+            height: 46px;
+            font-size: 15px;
+            transition: background-color 0.2s ease;
+        }
+
+        button.btn-salvar:hover {
+            background-color: var(--verde-escuro);
+        }
+
+        button.btn-finalizar-geral {
+            background-color: var(--verde-principal);
+            color: white;
+            border: none;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 14px 40px;
+            font-size: 16px;
+            transition: background-color 0.2s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        button.btn-finalizar-geral:hover {
+            background-color: var(--verde-escuro);
+        }
+
+        button.btn-remover {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .btn-export-csv {
+            background-color: #0284c7;
+            color: white;
+            border: none;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 10px 20px;
+            font-size: 13px;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-export-csv:hover {
+            background-color: #0369a1;
+        }
+
+        .btn-export-excel {
+            background-color: #16a34a;
+            color: white;
+            border: none;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 10px 20px;
+            font-size: 13px;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-export-excel:hover {
+            background-color: #15803d;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
             margin-top: 12px;
         }
 
-        .btn-export-csv, .btn-export-excel {
+        th, td {
+            border-bottom: 1px solid #e2e8f0;
+            padding: 12px;
+            text-align: left;
+            font-size: 13px;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 700;
+        }
+
+        .input-qtd {
+            width: 80px !important;
+            padding: 6px 10px !important;
+            min-height: 36px !important;
+            text-align: center;
+        }
+
+        .select-tipo {
+            min-height: 36px !important;
+            padding: 6px 10px !important;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(10, 25, 47, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .modal-container {
+            max-width: 500px;
             width: 100%;
         }
 
-        /* Container do título da tabela admin */
-        .card-conteudo > div[style*="flex"] {
-            flex-direction: column;
-            align-items: flex-start !important;
+        .btn-voltar {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0;
+            margin-bottom: 12px;
+            opacity: 0.9;
         }
-    }
-</style>
+
+        .btn-voltar:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        #telaPainelAdmin {
+            display: none;
+        }
+
+        .btn-sair-admin {
+            background-color: #ffffff;
+            color: #ef4444;
+            border: none;
+            font-weight: 700;
+            font-size: 14px;
+            padding: 10px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-sair-admin:hover {
+            background-color: #fef2f2;
+        }
+
+        /* =======================================================
+           REGRAS EXCLUSIVAS PARA SMARTPHONES (CELULARES)
+           ======================================================= */
+        @media (max-width: 768px) {
+            body {
+                padding: 12px 8px;
+            }
+
+            .banner-gestao {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 20px;
+                border-radius: 16px;
+            }
+
+            .banner-gestao h1 {
+                font-size: 22px;
+            }
+
+            .btn-admin, .btn-sair-admin {
+                width: 100%;
+                margin-top: 10px;
+                text-align: center;
+                padding: 12px;
+            }
+
+            .card-conteudo {
+                padding: 20px 14px;
+                border-radius: 16px;
+            }
+
+            /* Força o formulário a empilhar 1 item em cima do outro */
+            form.grid-form, #formFiltroAdmin {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 14px !important;
+            }
+
+            .campo-grupo {
+                width: 100% !important;
+            }
+
+            .campo-grupo label {
+                font-size: 14px !important;
+                font-weight: 700;
+                color: #1e293b;
+            }
+
+            input, select, .ts-control {
+                font-size: 16px !important; /* Previne zoom automático em telas mobile */
+                height: 48px !important;
+            }
+
+            button.btn-salvar, button.btn-finalizar-geral {
+                width: 100%;
+                height: 48px;
+                font-size: 16px;
+            }
+
+            #containerExportacao {
+                flex-direction: column;
+                width: 100%;
+                margin-top: 12px;
+            }
+
+            .btn-export-csv, .btn-export-excel {
+                width: 100%;
+                padding: 12px;
+            }
+
+            .card-conteudo > div[style*="flex"] {
+                flex-direction: column;
+                align-items: flex-start !important;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -379,41 +410,74 @@
         <div class="card-conteudo">
             <h3 style="margin-top:0; margin-bottom: 20px;">Cadastro de Pedido</h3>
             
-            <form id="registroForm">
-                <div>
+            <form id="registroForm" class="grid-form">
+                
+                <!-- 1. Funcionário -->
+                <div class="campo-grupo campo-full">
+                    <label for="nome">Funcionário</label>
                     <select id="nome" required placeholder="Digite para buscar o funcionário...">
                         <option value="">Carregando funcionários...</option>
                     </select>
                 </div>
 
-                <input type="text" id="fun_cod" placeholder="Código do Funcionário" readonly required>
+                <!-- 2. Código do Funcionário -->
+                <div class="campo-grupo">
+                    <label for="fun_cod">Código do Funcionário</label>
+                    <input type="text" id="fun_cod" placeholder="Código do Funcionário" readonly required>
+                </div>
 
-                <select id="revenda" required>
-                    <option value="">Selecione a Revenda</option>
-                    <option value="CORONEL FABRICIANO">CORONEL FABRICIANO</option>
-                    <option value="MANHUAÇU">MANHUAÇU</option> 
-                    <option value="GOVERNADOR VALADARES">GOVERNADOR VALADARES</option>
-                    <option value="TEOFILO OTONI">TEOFILO OTONI</option>  
-                    <option value="ITAOBIM">ITAOBIM</option>   
-                    <option value="JOÃO MONLEVADE">JOÃO MONLEVADE</option>                          
-                </select>
+                <!-- 3. Revenda -->
+                <div class="campo-grupo">
+                    <label for="revenda">Revenda</label>
+                    <select id="revenda" required>
+                        <option value="">Selecione a Revenda</option>
+                        <option value="CORONEL FABRICIANO">CORONEL FABRICIANO</option>
+                        <option value="MANHUAÇU">MANHUAÇU</option> 
+                        <option value="GOVERNADOR VALADARES">GOVERNADOR VALADARES</option>
+                        <option value="TEOFILO OTONI">TEOFILO OTONI</option>  
+                        <option value="ITAOBIM">ITAOBIM</option>   
+                        <option value="JOÃO MONLEVADE">JOÃO MONLEVADE</option>                          
+                    </select>
+                </div>
 
-                <select id="pagamento" required>
-                    <option value="">Selecione a Forma de Pagamento</option>
-                    <option value="PIX">PIX</option>
-                    <option value="BOLETO">BOLETO</option>                         
-                </select>
+                <!-- 4. Forma de Pagamento -->
+                <div class="campo-grupo">
+                    <label for="pagamento">Forma de Pagamento</label>
+                    <select id="pagamento" required>
+                        <option value="">Selecione a Forma de Pagamento</option>
+                        <option value="PIX">PIX</option>
+                        <option value="BOLETO">BOLETO</option>                         
+                    </select>
+                </div>
 
-                <div class="campo-full">
+                <!-- 5. Produto -->
+                <div class="campo-grupo campo-full">
+                    <label for="produto">Produto</label>
                     <select id="produto" required placeholder="Digite para buscar o produto...">
                         <option value="">Carregando produtos...</option>
                     </select>
                 </div>
 
-                <input type="text" id="prod_cod" placeholder="Código do Produto (Cod_prod)" readonly required>
-                <input type="text" id="qtd_cx" placeholder="Quantidade por Caixa (QTD)" readonly required>
-                <input type="text" id="val_cx" placeholder="Valor por Caixa (Val_cx)" readonly required>
-                <input type="text" id="val_uni" placeholder="Valor Unitário (val_uni)" readonly required>
+                <!-- 6. Detalhes do Produto -->
+                <div class="campo-grupo">
+                    <label for="prod_cod">Código do Produto</label>
+                    <input type="text" id="prod_cod" placeholder="Código do Produto (Cod_prod)" readonly required>
+                </div>
+
+                <div class="campo-grupo">
+                    <label for="qtd_cx">Qtd. por Caixa</label>
+                    <input type="text" id="qtd_cx" placeholder="Quantidade por Caixa (QTD)" readonly required>
+                </div>
+
+                <div class="campo-grupo">
+                    <label for="val_cx">Valor por Caixa</label>
+                    <input type="text" id="val_cx" placeholder="Valor por Caixa (Val_cx)" readonly required>
+                </div>
+
+                <div class="campo-grupo">
+                    <label for="val_uni">Valor Unitário</label>
+                    <input type="text" id="val_uni" placeholder="Valor Unitário (val_uni)" readonly required>
+                </div>
                 
                 <div class="container-botao">
                     <button type="submit" class="btn-salvar">Selecionar Produto</button>
@@ -499,13 +563,13 @@
             <h3 style="margin-top:0; margin-bottom: 20px;">Filtros de Gestão</h3>
             
             <form id="formFiltroAdmin" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 24px;">
-                <div>
-                    <label style="font-size: 13px; font-weight: 700; color: #475569; display: block; margin-bottom: 6px;">Data e Hora Inicial:</label>
+                <div class="campo-grupo">
+                    <label>Data e Hora Inicial:</label>
                     <input type="datetime-local" id="dataHoraInicialAdmin" required>
                 </div>
 
-                <div>
-                    <label style="font-size: 13px; font-weight: 700; color: #475569; display: block; margin-bottom: 6px;">Data e Hora Final:</label>
+                <div class="campo-grupo">
+                    <label>Data e Hora Final:</label>
                     <input type="datetime-local" id="dataHoraFinalAdmin" required>
                 </div>
 
