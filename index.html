@@ -16,289 +16,350 @@
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
     <style>
-        :root {
-            --verde-principal: #00823b;
-            --verde-escuro: #005a28;
-            --fundo-pagina: #f5f7f8;
-            --fundo-card: #ffffff;
-            --texto-titulo: #0a192f;
-            --fonte-padrao: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        }
+    :root {
+        --verde-principal: #00823b;
+        --verde-escuro: #005a28;
+        --fundo-pagina: #f5f7f8;
+        --fundo-card: #ffffff;
+        --texto-titulo: #0a192f;
+        --fonte-padrao: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
 
-        * {
-            box-sizing: border-box;
-        }
+    * {
+        box-sizing: border-box;
+    }
 
+    body {
+        background-color: var(--fundo-pagina);
+        font-family: var(--fonte-padrao);
+        color: var(--texto-titulo);
+        margin: 0;
+        padding: 24px;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .banner-gestao {
+        background-color: var(--verde-principal);
+        color: #ffffff;
+        padding: 32px 40px;
+        border-radius: 24px;
+        margin-bottom: 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .banner-gestao .subtitulo-caixa-alta {
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        opacity: 0.9;
+        margin-bottom: 8px;
+    }
+
+    .banner-gestao h1 {
+        font-size: 34px;
+        font-weight: 800;
+        margin: 0;
+        letter-spacing: -0.5px;
+    }
+
+    .btn-admin {
+        background-color: #ffffff;
+        color: var(--verde-principal);
+        border: none;
+        font-weight: 700;
+        font-size: 14px;
+        padding: 12px 24px;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        white-space: nowrap;
+    }
+
+    .btn-admin:hover {
+        background-color: #f1f5f9;
+        color: var(--verde-escuro);
+        transform: translateY(-1px);
+    }
+
+    .card-conteudo {
+        background-color: var(--fundo-card);
+        border-radius: 24px;
+        padding: 32px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    form {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+        margin-bottom: 32px;
+    }
+
+    .campo-full {
+        grid-column: 1 / -1;
+    }
+
+    input, select, .ts-control {
+        width: 100%;
+        padding: 12px 16px !important;
+        font-size: 14px !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 8px !important;
+        font-family: inherit !important;
+        min-height: 44px !important;
+        background-color: #fff !important;
+    }
+
+    input[readonly] {
+        background-color: #f1f5f9 !important;
+        color: #64748b;
+        cursor: not-allowed;
+    }
+
+    .container-botao {
+        grid-column: 1 / -1;
+        display: flex;
+        justify-content: center;
+        margin-top: 8px;
+    }
+
+    button.btn-salvar {
+        background-color: var(--verde-principal);
+        color: white;
+        border: none;
+        font-weight: 700;
+        border-radius: 8px;
+        cursor: pointer;
+        padding: 12px 32px;
+        height: 44px;
+        font-size: 15px;
+        transition: background-color 0.2s ease;
+    }
+
+    button.btn-salvar:hover {
+        background-color: var(--verde-escuro);
+    }
+
+    button.btn-finalizar-geral {
+        background-color: var(--verde-principal);
+        color: white;
+        border: none;
+        font-weight: 700;
+        border-radius: 8px;
+        cursor: pointer;
+        padding: 14px 40px;
+        font-size: 16px;
+        transition: background-color 0.2s ease;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    button.btn-finalizar-geral:hover {
+        background-color: var(--verde-escuro);
+    }
+
+    button.btn-remover {
+        background-color: #ef4444;
+        color: white;
+        border: none;
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 13px;
+    }
+
+    .btn-export-csv {
+        background-color: #0284c7;
+        color: white;
+        border: none;
+        font-weight: 700;
+        border-radius: 8px;
+        cursor: pointer;
+        padding: 10px 20px;
+        font-size: 13px;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-export-csv:hover {
+        background-color: #0369a1;
+    }
+
+    .btn-export-excel {
+        background-color: #16a34a;
+        color: white;
+        border: none;
+        font-weight: 700;
+        border-radius: 8px;
+        cursor: pointer;
+        padding: 10px 20px;
+        font-size: 13px;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-export-excel:hover {
+        background-color: #15803d;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 12px;
+    }
+
+    th, td {
+        border-bottom: 1px solid #e2e8f0;
+        padding: 12px;
+        text-align: left;
+        font-size: 13px;
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+    th {
+        background-color: #f8fafc;
+        color: #475569;
+        font-weight: 700;
+    }
+
+    .input-qtd {
+        width: 80px !important;
+        padding: 6px 10px !important;
+        min-height: 36px !important;
+        text-align: center;
+    }
+
+    .select-tipo {
+        min-height: 36px !important;
+        padding: 6px 10px !important;
+    }
+
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(10, 25, 47, 0.6);
+        backdrop-filter: blur(4px);
+        z-index: 999;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+    }
+
+    .modal-container {
+        max-width: 500px;
+        width: 100%;
+    }
+
+    .btn-voltar {
+        background: transparent;
+        border: none;
+        color: #ffffff;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 0;
+        margin-bottom: 12px;
+        opacity: 0.9;
+    }
+
+    .btn-voltar:hover {
+        opacity: 1;
+        text-decoration: underline;
+    }
+
+    #telaPainelAdmin {
+        display: none;
+    }
+
+    .btn-sair-admin {
+        background-color: #ffffff;
+        color: #ef4444;
+        border: none;
+        font-weight: 700;
+        font-size: 14px;
+        padding: 10px 20px;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-sair-admin:hover {
+        background-color: #fef2f2;
+    }
+
+    /* =======================================================
+       REGRAS DE RESPONSIVIDADE (SMARTPHONES E TABLETS)
+       ======================================================= */
+    @media (max-width: 768px) {
         body {
-            background-color: var(--fundo-pagina);
-            font-family: var(--fonte-padrao);
-            color: var(--texto-titulo);
-            margin: 0;
-            padding: 24px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
+            padding: 12px;
         }
 
         .banner-gestao {
-            background-color: var(--verde-principal);
-            color: #ffffff;
-            padding: 32px 40px;
-            border-radius: 24px;
-            margin-bottom: 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .banner-gestao .subtitulo-caixa-alta {
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            opacity: 0.9;
-            margin-bottom: 8px;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 20px 24px;
+            border-radius: 16px;
         }
 
         .banner-gestao h1 {
-            font-size: 34px;
-            font-weight: 800;
-            margin: 0;
-            letter-spacing: -0.5px;
+            font-size: 24px;
         }
 
-        .btn-admin {
-            background-color: #ffffff;
-            color: var(--verde-principal);
-            border: none;
-            font-weight: 700;
-            font-size: 14px;
-            padding: 12px 24px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .btn-admin:hover {
-            background-color: #f1f5f9;
-            color: var(--verde-escuro);
-            transform: translateY(-1px);
-        }
-
-        .card-conteudo {
-            background-color: var(--fundo-card);
-            border-radius: 24px;
-            padding: 32px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-
-        form {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-            margin-bottom: 32px;
-        }
-
-        .campo-full {
-            grid-column: 1 / -1;
-        }
-
-        input, select, .ts-control {
+        .btn-admin, .btn-sair-admin {
             width: 100%;
-            padding: 12px 16px !important;
-            font-size: 14px !important;
-            border: 1px solid #cbd5e1 !important;
-            border-radius: 8px !important;
-            font-family: inherit !important;
-            min-height: 44px !important;
-            background-color: #fff !important;
-        }
-
-        input[readonly] {
-            background-color: #f1f5f9 !important;
-            color: #64748b;
-            cursor: not-allowed;
-        }
-
-        .container-botao {
-            grid-column: 1 / -1;
-            display: flex;
-            justify-content: center;
             margin-top: 8px;
-        }
-
-        button.btn-salvar {
-            background-color: var(--verde-principal);
-            color: white;
-            border: none;
-            font-weight: 700;
-            border-radius: 8px;
-            cursor: pointer;
-            padding: 12px 32px;
-            height: 44px;
-            font-size: 15px;
-            transition: background-color 0.2s ease;
-        }
-
-        button.btn-salvar:hover {
-            background-color: var(--verde-escuro);
-        }
-
-        button.btn-finalizar-geral {
-            background-color: var(--verde-principal);
-            color: white;
-            border: none;
-            font-weight: 700;
-            border-radius: 8px;
-            cursor: pointer;
-            padding: 14px 40px;
-            font-size: 16px;
-            transition: background-color 0.2s ease;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        button.btn-finalizar-geral:hover {
-            background-color: var(--verde-escuro);
-        }
-
-        button.btn-remover {
-            background-color: #ef4444;
-            color: white;
-            border: none;
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 13px;
-        }
-
-        .btn-export-csv {
-            background-color: #0284c7;
-            color: white;
-            border: none;
-            font-weight: 700;
-            border-radius: 8px;
-            cursor: pointer;
-            padding: 10px 20px;
-            font-size: 13px;
-            transition: background-color 0.2s ease;
-        }
-
-        .btn-export-csv:hover {
-            background-color: #0369a1;
-        }
-
-        .btn-export-excel {
-            background-color: #16a34a;
-            color: white;
-            border: none;
-            font-weight: 700;
-            border-radius: 8px;
-            cursor: pointer;
-            padding: 10px 20px;
-            font-size: 13px;
-            transition: background-color 0.2s ease;
-        }
-
-        .btn-export-excel:hover {
-            background-color: #15803d;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 12px;
-        }
-
-        th, td {
-            border-bottom: 1px solid #e2e8f0;
-            padding: 12px;
-            text-align: left;
-            font-size: 13px;
-            vertical-align: middle;
-        }
-
-        th {
-            background-color: #f8fafc;
-            color: #475569;
-            font-weight: 700;
-        }
-
-        .input-qtd {
-            width: 80px !important;
-            padding: 6px 10px !important;
-            min-height: 36px !important;
             text-align: center;
         }
 
-        .select-tipo {
-            min-height: 36px !important;
-            padding: 6px 10px !important;
+        .card-conteudo {
+            padding: 20px 16px;
+            border-radius: 16px;
         }
 
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(10, 25, 47, 0.6);
-            backdrop-filter: blur(4px);
-            z-index: 999;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
+        /* Faz os formulários passarem de 2 colunas para 1 coluna */
+        form, #formFiltroAdmin {
+            grid-template-columns: 1fr !important;
+            gap: 12px;
         }
 
-        .modal-container {
-            max-width: 500px;
+        button.btn-salvar, button.btn-finalizar-geral {
             width: 100%;
         }
 
-        .btn-voltar {
-            background: transparent;
-            border: none;
-            color: #ffffff;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 0;
-            margin-bottom: 12px;
-            opacity: 0.9;
+        /* Ajustes dos botões do relatório na tela Admin */
+        #containerExportacao {
+            flex-direction: column;
+            width: 100%;
+            margin-top: 12px;
         }
 
-        .btn-voltar:hover {
-            opacity: 1;
-            text-decoration: underline;
+        .btn-export-csv, .btn-export-excel {
+            width: 100%;
         }
 
-        #telaPainelAdmin {
-            display: none;
+        /* Container do título da tabela admin */
+        .card-conteudo > div[style*="flex"] {
+            flex-direction: column;
+            align-items: flex-start !important;
         }
-
-        .btn-sair-admin {
-            background-color: #ffffff;
-            color: #ef4444;
-            border: none;
-            font-weight: 700;
-            font-size: 14px;
-            padding: 10px 20px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-sair-admin:hover {
-            background-color: #fef2f2;
-        }
-    </style>
+    }
+</style>
 </head>
 <body>
 
