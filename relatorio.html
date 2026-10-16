@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel de Relatórios - MegaGiro</title>
+
+    <!-- Favicon Personalizado MegaGiro (MG Verde com Círculo/Arco) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23ffffff'/><text x='18' y='65' font-family='Arial Black, sans-serif' font-weight='900' font-size='42' fill='%2300823b'>MG</text><path d='M 80 25 C 70 10, 30 20, 10 50 C 0 65, 10 80, 25 82 C 35 84, 60 70, 75 50' fill='none' stroke='%2300823b' stroke-width='6' stroke-linecap='round'/></svg>">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -205,7 +209,6 @@
             }
         });
 
-        // Função auxiliar para atualizar a coluna Ped_Fat para 1 no banco após exportar
         async function marcarPedidosComoFaturados() {
             if (pedidosFiltradosAtuais.length === 0) return;
 
@@ -246,7 +249,7 @@
                     `"${p.Cod_Prod}"`,
                     `"${p.Tipo_Ped}"`,
                     `"${p.QTD_Ped}"`,
-                    `"1"` // No arquivo baixado reflete a atualização para 1
+                    `"1"`
                 ];
                 csvContent += linha.join(';') + '\n';
             });
@@ -260,7 +263,6 @@
             link.click();
             document.body.removeChild(link);
 
-            // Atualiza Ped_Fat = 1 no Supabase após baixar
             marcarPedidosComoFaturados();
         }
 
@@ -277,7 +279,7 @@
                 'Cód. Produto': p.Cod_Prod,
                 'Tipo': p.Tipo_Ped,
                 'Quantidade': p.QTD_Ped,
-                'Faturado': 'Sim' // No arquivo baixado reflete a atualização para 1
+                'Faturado': 'Sim'
             }));
 
             const worksheet = XLSX.utils.json_to_sheet(dadosExcel);
@@ -286,7 +288,6 @@
 
             XLSX.writeFile(workbook, `Pedidos_MegaGiro_${new Date().toISOString().slice(0,10)}.xlsx`);
 
-            // Atualiza Ped_Fat = 1 no Supabase após baixar
             marcarPedidosComoFaturados();
         }
     </script>
