@@ -1,0 +1,426 @@
+:root {
+    --verde-principal: #00823b;
+    --verde-escuro: #005a28;
+    --fundo-pagina: #f5f7f8;
+    --fundo-card: #ffffff;
+    --texto-titulo: #0a192f;
+    --fonte-padrao: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--fundo-pagina);
+    font-family: var(--fonte-padrao);
+    color: var(--texto-titulo);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Estilização do Cabeçalho Superior */
+#header-container {
+    width: 100%;
+}
+
+.header {
+    width: 100%;
+    background-color: var(--verde-principal);
+    padding: 12px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.header-logo {
+    width: 220px;
+    height: auto;
+    max-height: 80px;
+    display: block;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+}
+
+/* Novo Botão Administradores no Cabeçalho */
+.btn-admin-header {
+    background-color: #ffffff;
+    color: var(--verde-principal);
+    border: none;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    white-space: nowrap;
+}
+
+.btn-admin-header:hover {
+    background-color: #f1f5f9;
+    color: var(--verde-escuro);
+    transform: translateY(-1px);
+}
+
+/* Estilização do Rodapé */
+#footer-container {
+    width: 100%;
+    margin-top: auto;
+}
+
+footer {
+    width: 100%;
+    background-color: #ffffff;
+    border-top: 1px solid #e2e8f0;
+    padding: 18px 24px;
+    text-align: center;
+    font-size: 13px;
+    color: #64748b;
+}
+
+/* Containers e Cards */
+.container {
+    max-width: 1200px;
+    width: 100%;
+    margin: 24px auto;
+    padding: 0 24px;
+}
+
+.banner-gestao {
+    background-color: var(--verde-principal);
+    color: #ffffff;
+    padding: 28px 40px;
+    border-radius: 24px;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.banner-gestao .subtitulo-caixa-alta {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    opacity: 0.9;
+    margin-bottom: 6px;
+}
+
+.banner-gestao h1 {
+    font-size: 32px;
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+.card-conteudo {
+    background-color: var(--fundo-card);
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* Formulários e Inputs */
+form.grid-form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.linha-funcionario {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 16px;
+}
+
+.campo-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.campo-grupo label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #475569;
+}
+
+.campo-full {
+    grid-column: 1 / -1;
+}
+
+input, select, .ts-control {
+    width: 100%;
+    padding: 12px 16px !important;
+    font-size: 14px !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+    font-family: inherit !important;
+    min-height: 46px !important;
+    background-color: #fff !important;
+}
+
+input[readonly] {
+    background-color: #f1f5f9 !important;
+    color: #64748b;
+    cursor: not-allowed;
+}
+
+.container-botao {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
+}
+
+button.btn-salvar {
+    background-color: var(--verde-principal);
+    color: white;
+    border: none;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 12px 32px;
+    height: 46px;
+    font-size: 15px;
+    transition: background-color 0.2s ease;
+}
+
+button.btn-salvar:hover {
+    background-color: var(--verde-escuro);
+}
+
+button.btn-finalizar-geral {
+    background-color: var(--verde-principal);
+    color: white;
+    border: none;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 14px 40px;
+    font-size: 16px;
+    transition: background-color 0.2s ease;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+button.btn-finalizar-geral:hover {
+    background-color: var(--verde-escuro);
+}
+
+button.btn-remover {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.btn-export-csv {
+    background-color: #0284c7;
+    color: white;
+    border: none;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 10px 20px;
+    font-size: 13px;
+    transition: background-color 0.2s ease;
+}
+
+.btn-export-csv:hover {
+    background-color: #0369a1;
+}
+
+.btn-export-excel {
+    background-color: #16a34a;
+    color: white;
+    border: none;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 10px 20px;
+    font-size: 13px;
+    transition: background-color 0.2s ease;
+}
+
+.btn-export-excel:hover {
+    background-color: #15803d;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+}
+
+th, td {
+    border-bottom: 1px solid #e2e8f0;
+    padding: 12px;
+    text-align: left;
+    font-size: 13px;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+th {
+    background-color: #f8fafc;
+    color: #475569;
+    font-weight: 700;
+}
+
+.input-qtd {
+    width: 80px !important;
+    padding: 6px 10px !important;
+    min-height: 36px !important;
+    text-align: center;
+}
+
+.select-tipo {
+    min-height: 36px !important;
+    padding: 6px 10px !important;
+}
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(10, 25, 47, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.modal-container {
+    max-width: 500px;
+    width: 100%;
+}
+
+.btn-voltar {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0;
+    margin-bottom: 12px;
+    opacity: 0.9;
+}
+
+.btn-voltar:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+#telaPainelAdmin {
+    display: none;
+}
+
+.btn-sair-admin {
+    background-color: #ffffff;
+    color: #ef4444;
+    border: none;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 10px 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-sair-admin:hover {
+    background-color: #fef2f2;
+}
+
+/* Responsividade Mobile */
+@media (max-width: 768px) {
+    .header {
+        padding: 12px 16px;
+    }
+    
+    .header-logo {
+        width: 150px;
+    }
+
+    .btn-admin-header {
+        padding: 8px 14px;
+        font-size: 13px;
+    }
+
+    .container {
+        padding: 0 12px 12px 12px;
+        margin: 12px auto;
+    }
+
+    .banner-gestao {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px;
+        border-radius: 16px;
+    }
+
+    .banner-gestao h1 {
+        font-size: 22px;
+    }
+
+    .btn-sair-admin {
+        width: 100%;
+        margin-top: 10px;
+        text-align: center;
+        padding: 12px;
+    }
+
+    .card-conteudo {
+        padding: 20px 14px;
+        border-radius: 16px;
+    }
+
+    form.grid-form, #formFiltroAdmin, .linha-funcionario {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 14px !important;
+    }
+
+    input, select, .ts-control {
+        font-size: 16px !important;
+        height: 48px !important;
+    }
+
+    button.btn-salvar, button.btn-finalizar-geral {
+        width: 100%;
+        height: 48px;
+        font-size: 16px;
+    }
+
+    #containerExportacao {
+        flex-direction: column;
+        width: 100%;
+        margin-top: 12px;
+    }
+
+    .btn-export-csv, .btn-export-excel {
+        width: 100%;
+        padding: 12px;
+    }
+}

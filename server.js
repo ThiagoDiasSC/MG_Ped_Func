@@ -7,10 +7,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Servir arquivos estáticos (HTML, CSS, JS) na mesma pasta do servidor
+// Servir arquivos estáticos (HTML, CSS, JS e pastas de Layout) na mesma pasta do servidor
 app.use(express.static(__dirname));
 
-// Configuração de conexão direta com o Supabase usando seus parâmetros
+// Configuração de conexão com o Supabase
 const pool = new Pool({
     user: process.env.DB_USER || 'postgres.bhsqszzupdbzscnxskqd',
     host: process.env.DB_HOST || 'aws-0-us-east-1.pooler.supabase.com',
@@ -18,11 +18,11 @@ const pool = new Pool({
     password: process.env.DB_PASSWORD || '230499@ScMeg@',
     port: process.env.DB_PORT || 5432,
     ssl: {
-        rejectUnauthorized: false // Obrigatório para conexão segura SSL com o Supabase
+        rejectUnauthorized: false
     }
 });
 
-// Teste de conexão
+// Teste de conexão com o banco
 pool.connect((err, client, release) => {
     if (err) {
         console.error('Erro ao conectar ao PostgreSQL no Supabase:', err.stack);
@@ -32,7 +32,7 @@ pool.connect((err, client, release) => {
     release();
 });
 
-// 1. Rota para autenticação de Administradores na tabela MG_User
+// 1. Rota para autenticação de Administradores
 app.post('/api/login', async (req, res) => {
     const { usuario, senha } = req.body;
 
@@ -62,7 +62,7 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-// 2. Rota para filtrar pedidos por intervalo de data/hora no Painel Admin
+// 2. Rota para filtrar pedidos por intervalo de data/hora no Painel Admin / Relatório
 app.get('/api/pedidos/filtro', async (req, res) => {
     const { inicio, fim } = req.query;
 
@@ -226,12 +226,17 @@ app.post('/api/registros', async (req, res) => {
     }
 });
 
-// Rota principal para carregar o arquivo HTML
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index_2.html'));
+// Rota para a página de Relatório
+app.get('/relatorio.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'relatorio.html'));
 });
 
-// Porta dinâmica para servidores de nuvem (Render) ou 3000 localmente
+// Rota principal (Tela de Pedido)
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// Inicialização do Servidor
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT} conectado ao Supabase`);

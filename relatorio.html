@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Relatórios - MegaGiro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- SheetJS (Para exportar para Excel .xlsx) -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+    <!-- Style.css da pasta Layout -->
+    <link rel="stylesheet" href="Layout/style.css">
+</head>
+<body>
+
+    <!-- Recipiente do Cabeçalho -->
+    <div id="header-container"></div>
+
+    <!-- TELA DE PAINEL ADMINISTRATIVO / RELATÓRIO -->
+    <div class="container" id="telaPainelAdmin" style="display: block;">
+
+        <div class="banner-gestao">
+            <div>
+                <div class="subtitulo-caixa-alta">Acompanhamento Estratégico</div>
+                <h1>Painel Administrativo - Relatórios</h1>
+            </div>
+            <div>
+                <button type="button" class="btn-sair-admin" onclick="sairParaPedidos()">
+                    <i class="fa-solid fa-arrow-left"></i> Voltar aos Pedidos
+                </button>
+            </div>
+        </div>
+
+        <div class="card-conteudo">
+            <h3 style="margin-top:0; margin-bottom: 20px;">Filtros de Gestão</h3>
+            
+            <form id="formFiltroAdmin" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 24px;">
+                <div class="campo-grupo">
+                    <label for="dataHoraInicialAdmin">Data e Hora Inicial:</label>
+                    <input type="datetime-local" id="dataHoraInicialAdmin" required>
+                </div>
+
+                <div class="campo-grupo">
+                    <label for="dataHoraFinalAdmin">Data e Hora Final:</label>
+                    <input type="datetime-local" id="dataHoraFinalAdmin" required>
+                </div>
+
+                <div class="container-botao">
+                    <button type="submit" class="btn-salvar">Filtrar Pedidos</button>
+                </div>
+            </form>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 32px; margin-bottom: 12px;">
+                <h3 style="margin: 0;">Resultados da Consulta</h3>
+                <div id="containerExportacao" style="display: none; gap: 10px;">
+                    <button type="button" class="btn-export-csv" onclick="exportarCSV()">Exportar CSV</button>
+                    <button type="button" class="btn-export-excel" onclick="exportarExcel()">Exportar Excel</button>
+                </div>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nº Pedido</th>
+                            <th>Data/Hora Inserção</th>
+                            <th>Cód. Func.</th>
+                            <th>Nome Funcionário</th>
+                            <th>Revenda</th>
+                            <th>Pagamento</th>
+                            <th>Cód. Prod.</th>
+                            <th>Tipo</th>
+                            <th>Qtd.</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaResultadosAdmin">
+                        <tr>
+                            <td colspan="9" style="text-align: center; color: #94a3b8; padding: 24px;">Selecione o intervalo de datas acima e clique em "Filtrar Pedidos".</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Recipiente do Rodapé -->
+    <div id="footer-container"></div>
+
+    <script>
+        // Carrega o Cabeçalho e Rodapé dinamicamente da pasta Layout
+        async function carregarLayout() {
+            try {
+                const headerRes = await fetch('Layout/Cabecalho/header.html');
+                if (headerRes.ok) {
+                    document.getElementById('header-container').innerHTML = await headerRes.text();
+                }
+
+                const footerRes = await fetch('Layout/Rodape/footer.html');
+                if (footerRes.ok) {
+                    document.getElementById('footer-container').innerHTML = await footerRes.text();
+                }
+            } catch (err) {
+                console.error('Erro ao carregar componentes de layout:', err);
+            }
+        }
+        carregarLayout();
+
+        const API_BASE_URL = window.location.origin;
+        let pedidosFiltradosAtuais = [];
+
+        function sairParaPedidos() {
+            window.location.href = '/';
+        }
+
+        // Preenche automaticamente as datas de hoje (início do dia até o momento)
+        document.addEventListener('DOMContentLoaded', () => {
+            const agora = new Date();
+            const opcoesData = { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit' };
+            const opcoesHora = { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit', hour12: false };
+
+            const dataStr = agora.toLocaleDateString('pt-BR', opcoesData).split('/').reverse().join('-');
+            const horaStr = agora.toLocaleTimeString('pt-BR', opcoesHora);
+
+            document.getElementById('dataHoraInicialAdmin').value = `${dataStr}T00:00`;
+            document.getElementById('dataHoraFinalAdmin').value = `${dataStr}T${horaStr}`;
+        });
+
+        // Evento de submissão do Filtro de Pedidos
+        document.getElementById('formFiltroAdmin').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const inicio = document.getElementById('dataHoraInicialAdmin').value;
+            const fim = document.getElementById('dataHoraFinalAdmin').value;
+
+            if (new Date(inicio) > new Date(fim)) {
+                alert('Atenção: A data e hora inicial não pode ser maior do que a data e hora final.');
+                return;
+            }
+
+            const tbody = document.getElementById('tabelaResultadosAdmin');
+            const containerExport = document.getElementById('containerExportacao');
+            
+            tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #64748b; padding: 24px;">Buscando pedidos...</td></tr>`;
+            containerExport.style.display = 'none';
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/pedidos/filtro?inicio=${encodeURIComponent(inicio)}&fim=${encodeURIComponent(fim)}`);
+                pedidosFiltradosAtuais = await res.json();
+
+                if (!res.ok) throw new Error(pedidosFiltradosAtuais.error || 'Erro ao consultar pedidos.');
+
+                if (pedidosFiltradosAtuais.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #94a3b8; padding: 24px;">Nenhum pedido encontrado para o intervalo selecionado.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                pedidosFiltradosAtuais.forEach(p => {
+                    const tr = document.createElement('tr');
+                    const numPedForm = String(p.Num_Ped).padStart(6, '0');
+
+                    tr.innerHTML = `
+                        <td><strong>${numPedForm}</strong></td>
+                        <td>${p.DT_Ped}</td>
+                        <td>${p.Cod_Func}</td>
+                        <td>${p.Nome_Func}</td>
+                        <td>${p.MG_Rev}</td>
+                        <td>${p.Form_Pag}</td>
+                        <td>${p.Cod_Prod}</td>
+                        <td>${p.Tipo_Ped}</td>
+                        <td>${p.QTD_Ped}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+                containerExport.style.display = 'flex';
+
+            } catch (error) {
+                alert(error.message);
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #ef4444; padding: 24px;">Erro ao carregar os dados.</td></tr>`;
+            }
+        });
+
+        // Exportação para CSV
+        function exportarCSV() {
+            if (pedidosFiltradosAtuais.length === 0) return;
+
+            const cabecalhos = ['Num_Ped', 'DT_Ped', 'Cod_Func', 'Nome_Func', 'MG_Rev', 'Form_Pag', 'Cod_Prod', 'Tipo_Ped', 'QTD_Ped'];
+            let csvContent = '\uFEFF' + cabecalhos.join(';') + '\n';
+
+            pedidosFiltradosAtuais.forEach(p => {
+                const linha = [
+                    `"${String(p.Num_Ped).padStart(6, '0')}"`,
+                    `"${p.DT_Ped}"`,
+                    `"${p.Cod_Func}"`,
+                    `"${p.Nome_Func}"`,
+                    `"${p.MG_Rev}"`,
+                    `"${p.Form_Pag}"`,
+                    `"${p.Cod_Prod}"`,
+                    `"${p.Tipo_Ped}"`,
+                    `"${p.QTD_Ped}"`
+                ];
+                csvContent += linha.join(';') + '\n';
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', `Pedidos_MegaGiro_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Exportação para Excel (.xlsx)
+        function exportarExcel() {
+            if (pedidosFiltradosAtuais.length === 0) return;
+
+            const dadosExcel = pedidosFiltradosAtuais.map(p => ({
+                'Nº Pedido': String(p.Num_Ped).padStart(6, '0'),
+                'Data/Hora Inserção': p.DT_Ped,
+                'Cód. Funcionario': p.Cod_Func,
+                'Nome Funcionário': p.Nome_Func,
+                'Revenda': p.MG_Rev,
+                'Forma de Pagamento': p.Form_Pag,
+                'Cód. Produto': p.Cod_Prod,
+                'Tipo': p.Tipo_Ped,
+                'Quantidade': p.QTD_Ped
+            }));
+
+            const worksheet = XLSX.utils.json_to_sheet(dadosExcel);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Pedidos');
+
+            XLSX.writeFile(workbook, `Pedidos_MegaGiro_${new Date().toISOString().slice(0,10)}.xlsx`);
+        }
+    </script>
+</body>
+</html>

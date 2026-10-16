@@ -8,399 +8,20 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <!-- Tom Select -->
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
 
-    <!-- SheetJS (Para exportar para Excel .xlsx) -->
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-
-    <style>
-        :root {
-            --verde-principal: #00823b;
-            --verde-escuro: #005a28;
-            --fundo-pagina: #f5f7f8;
-            --fundo-card: #ffffff;
-            --texto-titulo: #0a192f;
-            --fonte-padrao: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: var(--fundo-pagina);
-            font-family: var(--fonte-padrao);
-            color: var(--texto-titulo);
-            margin: 0;
-            padding: 24px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .banner-gestao {
-            background-color: var(--verde-principal);
-            color: #ffffff;
-            padding: 32px 40px;
-            border-radius: 24px;
-            margin-bottom: 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .banner-gestao .subtitulo-caixa-alta {
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            opacity: 0.9;
-            margin-bottom: 8px;
-        }
-
-        .banner-gestao h1 {
-            font-size: 34px;
-            font-weight: 800;
-            margin: 0;
-            letter-spacing: -0.5px;
-        }
-
-        .btn-admin {
-            background-color: #ffffff;
-            color: var(--verde-principal);
-            border: none;
-            font-weight: 700;
-            font-size: 14px;
-            padding: 12px 24px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            white-space: nowrap;
-        }
-
-        .btn-admin:hover {
-            background-color: #f1f5f9;
-            color: var(--verde-escuro);
-            transform: translateY(-1px);
-        }
-
-        .card-conteudo {
-            background-color: var(--fundo-card);
-            border-radius: 24px;
-            padding: 32px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-
-        /* Estrutura do Formulário Desktop */
-        form.grid-form {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-            margin-bottom: 32px;
-        }
-
-        /* Linha do Funcionário e Código (3fr 1fr no computador) */
-        .linha-funcionario {
-            grid-column: 1 / -1;
-            display: grid;
-            grid-template-columns: 3fr 1fr;
-            gap: 16px;
-        }
-
-        .campo-grupo {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .campo-grupo label {
-            font-size: 13px;
-            font-weight: 700;
-            color: #475569;
-        }
-
-        .campo-full {
-            grid-column: 1 / -1;
-        }
-
-        input, select, .ts-control {
-            width: 100%;
-            padding: 12px 16px !important;
-            font-size: 14px !important;
-            border: 1px solid #cbd5e1 !important;
-            border-radius: 8px !important;
-            font-family: inherit !important;
-            min-height: 46px !important;
-            background-color: #fff !important;
-        }
-
-        input[readonly] {
-            background-color: #f1f5f9 !important;
-            color: #64748b;
-            cursor: not-allowed;
-        }
-
-        .container-botao {
-            grid-column: 1 / -1;
-            display: flex;
-            justify-content: center;
-            margin-top: 8px;
-        }
-
-        button.btn-salvar {
-            background-color: var(--verde-principal);
-            color: white;
-            border: none;
-            font-weight: 700;
-            border-radius: 8px;
-            cursor: pointer;
-            padding: 12px 32px;
-            height: 46px;
-            font-size: 15px;
-            transition: background-color 0.2s ease;
-        }
-
-        button.btn-salvar:hover {
-            background-color: var(--verde-escuro);
-        }
-
-        button.btn-finalizar-geral {
-            background-color: var(--verde-principal);
-            color: white;
-            border: none;
-            font-weight: 700;
-            border-radius: 8px;
-            cursor: pointer;
-            padding: 14px 40px;
-            font-size: 16px;
-            transition: background-color 0.2s ease;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        button.btn-finalizar-geral:hover {
-            background-color: var(--verde-escuro);
-        }
-
-        button.btn-remover {
-            background-color: #ef4444;
-            color: white;
-            border: none;
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 13px;
-        }
-
-        .btn-export-csv {
-            background-color: #0284c7;
-            color: white;
-            border: none;
-            font-weight: 700;
-            border-radius: 8px;
-            cursor: pointer;
-            padding: 10px 20px;
-            font-size: 13px;
-            transition: background-color 0.2s ease;
-        }
-
-        .btn-export-csv:hover {
-            background-color: #0369a1;
-        }
-
-        .btn-export-excel {
-            background-color: #16a34a;
-            color: white;
-            border: none;
-            font-weight: 700;
-            border-radius: 8px;
-            cursor: pointer;
-            padding: 10px 20px;
-            font-size: 13px;
-            transition: background-color 0.2s ease;
-        }
-
-        .btn-export-excel:hover {
-            background-color: #15803d;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 12px;
-        }
-
-        th, td {
-            border-bottom: 1px solid #e2e8f0;
-            padding: 12px;
-            text-align: left;
-            font-size: 13px;
-            vertical-align: middle;
-            white-space: nowrap;
-        }
-
-        th {
-            background-color: #f8fafc;
-            color: #475569;
-            font-weight: 700;
-        }
-
-        .input-qtd {
-            width: 80px !important;
-            padding: 6px 10px !important;
-            min-height: 36px !important;
-            text-align: center;
-        }
-
-        .select-tipo {
-            min-height: 36px !important;
-            padding: 6px 10px !important;
-        }
-
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(10, 25, 47, 0.6);
-            backdrop-filter: blur(4px);
-            z-index: 999;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
-        }
-
-        .modal-container {
-            max-width: 500px;
-            width: 100%;
-        }
-
-        .btn-voltar {
-            background: transparent;
-            border: none;
-            color: #ffffff;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 0;
-            margin-bottom: 12px;
-            opacity: 0.9;
-        }
-
-        .btn-voltar:hover {
-            opacity: 1;
-            text-decoration: underline;
-        }
-
-        #telaPainelAdmin {
-            display: none;
-        }
-
-        .btn-sair-admin {
-            background-color: #ffffff;
-            color: #ef4444;
-            border: none;
-            font-weight: 700;
-            font-size: 14px;
-            padding: 10px 20px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-sair-admin:hover {
-            background-color: #fef2f2;
-        }
-
-        /* =======================================================
-           REGRAS EXCLUSIVAS PARA SMARTPHONES (CELULARES)
-           ======================================================= */
-        @media (max-width: 768px) {
-            body {
-                padding: 12px 8px;
-            }
-
-            .banner-gestao {
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 20px;
-                border-radius: 16px;
-            }
-
-            .banner-gestao h1 {
-                font-size: 22px;
-            }
-
-            .btn-admin, .btn-sair-admin {
-                width: 100%;
-                margin-top: 10px;
-                text-align: center;
-                padding: 12px;
-            }
-
-            .card-conteudo {
-                padding: 20px 14px;
-                border-radius: 16px;
-            }
-
-            /* Força o formulário e suas linhas a empilharem 1 item por linha no celular */
-            form.grid-form, #formFiltroAdmin, .linha-funcionario {
-                display: flex !important;
-                flex-direction: column !important;
-                gap: 14px !important;
-            }
-
-            .campo-grupo {
-                width: 100% !important;
-            }
-
-            .campo-grupo label {
-                font-size: 14px !important;
-                font-weight: 700;
-                color: #1e293b;
-            }
-
-            input, select, .ts-control {
-                font-size: 16px !important;
-                height: 48px !important;
-            }
-
-            button.btn-salvar, button.btn-finalizar-geral {
-                width: 100%;
-                height: 48px;
-                font-size: 16px;
-            }
-
-            #containerExportacao {
-                flex-direction: column;
-                width: 100%;
-                margin-top: 12px;
-            }
-
-            .btn-export-csv, .btn-export-excel {
-                width: 100%;
-                padding: 12px;
-            }
-
-            .card-conteudo > div[style*="flex"] {
-                flex-direction: column;
-                align-items: flex-start !important;
-            }
-        }
-    </style>
+    <!-- Style.css da pasta Layout -->
+    <link rel="stylesheet" href="Layout/style.css">
 </head>
 <body>
+
+    <!-- Recipiente do Cabeçalho -->
+    <div id="header-container"></div>
 
     <!-- 1. TELA PRINCIPAL DE PEDIDO -->
     <div class="container" id="telaPrincipal">
@@ -410,9 +31,6 @@
                 <div class="subtitulo-caixa-alta">Acompanhamento Estratégico</div>
                 <h1>Pedido de Funcionário</h1>
             </div>
-            <div>
-                <button type="button" class="btn-admin" onclick="abrirModalLogin()">Administradores</button>
-            </div>
         </div>
 
         <div class="card-conteudo">
@@ -420,7 +38,6 @@
             
             <form id="registroForm" class="grid-form">
                 
-                <!-- Linha 1 no PC: Funcionário (Menor) + Código do Funcionário ao Lado -->
                 <div class="linha-funcionario">
                     <div class="campo-grupo">
                         <label for="nome">Funcionário</label>
@@ -435,7 +52,6 @@
                     </div>
                 </div>
 
-                <!-- Linha 2 no PC: Revenda + Forma de Pagamento em Paralelo -->
                 <div class="campo-grupo">
                     <label for="revenda">Revenda</label>
                     <select id="revenda" required>
@@ -458,7 +74,6 @@
                     </select>
                 </div>
 
-                <!-- Linha 3 no PC: Produto (Largura Total) -->
                 <div class="campo-grupo campo-full">
                     <label for="produto">Produto</label>
                     <select id="produto" required placeholder="Digite para buscar o produto...">
@@ -466,7 +81,6 @@
                     </select>
                 </div>
 
-                <!-- Linhas 4 e 5 no PC: Detalhes dos Produtos -->
                 <div class="campo-grupo">
                     <label for="prod_cod">Código do Produto</label>
                     <input type="text" id="prod_cod" placeholder="Código do Produto (Cod_prod)" readonly required>
@@ -522,7 +136,7 @@
 
     </div>
 
-    <!-- 2. TELA / MODAL DE LOGIN -->
+    <!-- 2. MODAL DE LOGIN (ADMINISTRADORES) -->
     <div class="modal-overlay" id="modalAdmin">
         <div class="modal-container">
             <button type="button" class="btn-voltar" onclick="fecharModalLogin()">← Voltar ao pedido</button>
@@ -554,75 +168,28 @@
         </div>
     </div>
 
-    <!-- 3. TELA DE PAINEL ADMINISTRATIVO -->
-    <div class="container" id="telaPainelAdmin">
-
-        <div class="banner-gestao">
-            <div>
-                <div class="subtitulo-caixa-alta">Acompanhamento Estratégico</div>
-                <h1>Painel Administrativo</h1>
-            </div>
-            <div>
-                <button type="button" class="btn-sair-admin" onclick="sairPainelAdmin()">Sair</button>
-            </div>
-        </div>
-
-        <div class="card-conteudo">
-            <h3 style="margin-top:0; margin-bottom: 20px;">Filtros de Gestão</h3>
-            
-            <form id="formFiltroAdmin" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 24px;">
-                <div class="campo-grupo">
-                    <label>Data e Hora Inicial:</label>
-                    <input type="datetime-local" id="dataHoraInicialAdmin" required>
-                </div>
-
-                <div class="campo-grupo">
-                    <label>Data e Hora Final:</label>
-                    <input type="datetime-local" id="dataHoraFinalAdmin" required>
-                </div>
-
-                <div class="container-botao">
-                    <button type="submit" class="btn-salvar">Filtrar Pedidos</button>
-                </div>
-            </form>
-
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 32px; margin-bottom: 12px;">
-                <h3 style="margin: 0;">Resultados da Consulta</h3>
-                <div id="containerExportacao" style="display: none; gap: 10px;">
-                    <button type="button" class="btn-export-csv" onclick="exportarCSV()">Exportar CSV</button>
-                    <button type="button" class="btn-export-excel" onclick="exportarExcel()">Exportar Excel</button>
-                </div>
-            </div>
-
-            <div style="overflow-x: auto;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nº Pedido</th>
-                            <th>Data/Hora Inserção</th>
-                            <th>Cód. Func.</th>
-                            <th>Nome Funcionário</th>
-                            <th>Revenda</th>
-                            <th>Pagamento</th>
-                            <th>Cód. Prod.</th>
-                            <th>Tipo</th>
-                            <th>Qtd.</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabelaResultadosAdmin">
-                        <tr>
-                            <td colspan="9" style="text-align: center; color: #94a3b8; padding: 24px;">Selecione o intervalo de datas acima e clique em "Filtrar Pedidos".</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-    </div>
+    <!-- Recipiente do Rodapé -->
+    <div id="footer-container"></div>
 
     <script>
-        const API_BASE_URL = window.location.origin;
+        async function carregarLayout() {
+            try {
+                const headerRes = await fetch('Layout/Cabecalho/header.html');
+                if (headerRes.ok) {
+                    document.getElementById('header-container').innerHTML = await headerRes.text();
+                }
 
+                const footerRes = await fetch('Layout/Rodape/footer.html');
+                if (footerRes.ok) {
+                    document.getElementById('footer-container').innerHTML = await footerRes.text();
+                }
+            } catch (err) {
+                console.error('Erro ao carregar componentes de layout:', err);
+            }
+        }
+        carregarLayout();
+
+        const API_BASE_URL = window.location.origin;
         const API_REGISTROS = `${API_BASE_URL}/api/registros`;
         const API_FUNCIONARIOS = `${API_BASE_URL}/api/funcionarios`;
         const API_PRODUTOS = `${API_BASE_URL}/api/produtos`;
@@ -634,7 +201,6 @@
         let tomSelectProduto = null;
         let itensSelecionados = [];
         let contadorItens = 0;
-        let pedidosFiltradosAtuais = [];
 
         function abrirModalLogin() {
             document.getElementById('modalAdmin').style.display = 'flex';
@@ -645,15 +211,9 @@
             document.getElementById('formLoginAdmin').reset();
         }
 
-        function sairPainelAdmin() {
-            document.getElementById('telaPainelAdmin').style.display = 'none';
-            document.getElementById('telaPrincipal').style.display = 'block';
-        }
-
-        // Login de Administrador
+        // Submissão do Login de Administrador -> Direciona para relatorio.html
         document.getElementById('formLoginAdmin').addEventListener('submit', async (e) => {
             e.preventDefault();
-
             const usuario = document.getElementById('adminUsuario').value;
             const senha = document.getElementById('adminSenha').value;
             const btn = document.getElementById('btnEntrarAdmin');
@@ -669,24 +229,12 @@
                 });
 
                 const data = await res.json();
-
-                if (!res.ok) {
-                    throw new Error(data.error || 'Erro de autenticação.');
-                }
+                if (!res.ok) throw new Error(data.error || 'Erro de autenticação.');
 
                 fecharModalLogin();
-                document.getElementById('telaPrincipal').style.display = 'none';
-                document.getElementById('telaPainelAdmin').style.display = 'block';
-
-                const agora = new Date();
-                const opcoesData = { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit' };
-                const opcoesHora = { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit', hour12: false };
-
-                const dataStr = agora.toLocaleDateString('pt-BR', opcoesData).split('/').reverse().join('-');
-                const horaStr = agora.toLocaleTimeString('pt-BR', opcoesHora);
-
-                document.getElementById('dataHoraInicialAdmin').value = `${dataStr}T00:00`;
-                document.getElementById('dataHoraFinalAdmin').value = `${dataStr}T${horaStr}`;
+                
+                // Redirecionamento automático para a nova tela de relatórios
+                window.location.href = 'relatorio.html';
 
             } catch (error) {
                 alert(error.message);
@@ -696,118 +244,6 @@
             }
         });
 
-        // Filtro por Data/Hora no Painel Admin
-        document.getElementById('formFiltroAdmin').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const inicio = document.getElementById('dataHoraInicialAdmin').value;
-            const fim = document.getElementById('dataHoraFinalAdmin').value;
-
-            if (new Date(inicio) > new Date(fim)) {
-                alert('Atenção: A data e hora inicial não pode ser maior do que a data e hora final.');
-                return;
-            }
-
-            const tbody = document.getElementById('tabelaResultadosAdmin');
-            const containerExport = document.getElementById('containerExportacao');
-            
-            tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #64748b; padding: 24px;">Buscando pedidos...</td></tr>`;
-            containerExport.style.display = 'none';
-
-            try {
-                const res = await fetch(`${API_BASE_URL}/api/pedidos/filtro?inicio=${encodeURIComponent(inicio)}&fim=${encodeURIComponent(fim)}`);
-                pedidosFiltradosAtuais = await res.json();
-
-                if (!res.ok) throw new Error(pedidosFiltradosAtuais.error || 'Erro ao consultar pedidos.');
-
-                if (pedidosFiltradosAtuais.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #94a3b8; padding: 24px;">Nenhum pedido encontrado para o intervalo selecionado.</td></tr>`;
-                    return;
-                }
-
-                tbody.innerHTML = '';
-                pedidosFiltradosAtuais.forEach(p => {
-                    const tr = document.createElement('tr');
-                    const numPedForm = String(p.Num_Ped).padStart(6, '0');
-
-                    tr.innerHTML = `
-                        <td><strong>${numPedForm}</strong></td>
-                        <td>${p.DT_Ped}</td>
-                        <td>${p.Cod_Func}</td>
-                        <td>${p.Nome_Func}</td>
-                        <td>${p.MG_Rev}</td>
-                        <td>${p.Form_Pag}</td>
-                        <td>${p.Cod_Prod}</td>
-                        <td>${p.Tipo_Ped}</td>
-                        <td>${p.QTD_Ped}</td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-
-                containerExport.style.display = 'flex';
-
-            } catch (error) {
-                alert(error.message);
-                tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #ef4444; padding: 24px;">Erro ao carregar os dados.</td></tr>`;
-            }
-        });
-
-        // Exportação CSV
-        function exportarCSV() {
-            if (pedidosFiltradosAtuais.length === 0) return;
-
-            const cabecalhos = ['Num_Ped', 'DT_Ped', 'Cod_Func', 'Nome_Func', 'MG_Rev', 'Form_Pag', 'Cod_Prod', 'Tipo_Ped', 'QTD_Ped'];
-            let csvContent = '\uFEFF' + cabecalhos.join(';') + '\n';
-
-            pedidosFiltradosAtuais.forEach(p => {
-                const linha = [
-                    `"${String(p.Num_Ped).padStart(6, '0')}"`,
-                    `"${p.DT_Ped}"`,
-                    `"${p.Cod_Func}"`,
-                    `"${p.Nome_Func}"`,
-                    `"${p.MG_Rev}"`,
-                    `"${p.Form_Pag}"`,
-                    `"${p.Cod_Prod}"`,
-                    `"${p.Tipo_Ped}"`,
-                    `"${p.QTD_Ped}"`
-                ];
-                csvContent += linha.join(';') + '\n';
-            });
-
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.setAttribute('href', url);
-            link.setAttribute('download', `Pedidos_MegaGiro_${new Date().toISOString().slice(0,10)}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        // Exportação Excel (.xlsx)
-        function exportarExcel() {
-            if (pedidosFiltradosAtuais.length === 0) return;
-
-            const dadosExcel = pedidosFiltradosAtuais.map(p => ({
-                'Nº Pedido': String(p.Num_Ped).padStart(6, '0'),
-                'Data/Hora Inserção': p.DT_Ped,
-                'Cód. Funcionario': p.Cod_Func,
-                'Nome Funcionário': p.Nome_Func,
-                'Revenda': p.MG_Rev,
-                'Forma de Pagamento': p.Form_Pag,
-                'Cód. Produto': p.Cod_Prod,
-                'Tipo': p.Tipo_Ped,
-                'Quantidade': p.QTD_Ped
-            }));
-
-            const worksheet = XLSX.utils.json_to_sheet(dadosExcel);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, 'Pedidos');
-
-            XLSX.writeFile(workbook, `Pedidos_MegaGiro_${new Date().toISOString().slice(0,10)}.xlsx`);
-        }
-
-        // Carregamento Inicial dos Dropdowns
         async function inicializarFuncionarios() {
             try {
                 const res = await fetch(API_FUNCIONARIOS);
@@ -878,7 +314,6 @@
             }
         }
 
-        // Inserção do Produto na Tabela de Finalização
         document.getElementById('registroForm').addEventListener('submit', (e) => {
             e.preventDefault();
 
@@ -966,7 +401,6 @@
             }
         }
 
-        // Envios do Pedido Lote
         async function finalizarPedidoGeral() {
             if (itensSelecionados.length === 0) {
                 alert('Adicione pelo menos um produto ao pedido antes de finalizar.');
@@ -1045,7 +479,6 @@
             }
         }
 
-        // Inicialização
         inicializarFuncionarios();
         inicializarProdutos();
     </script>
