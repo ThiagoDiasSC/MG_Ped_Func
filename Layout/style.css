@@ -49,7 +49,7 @@ body {
     align-items: center;
 }
 
-/* Novo Botão Administradores no Cabeçalho */
+/* Botão Administradores no Cabeçalho */
 .btn-admin-header {
     background-color: #ffffff;
     color: var(--verde-principal);
@@ -68,6 +68,26 @@ body {
     background-color: #f1f5f9;
     color: var(--verde-escuro);
     transform: translateY(-1px);
+}
+
+.btn-logout {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.btn-logout:hover {
+    background-color: #ef4444;
+    border-color: #ef4444;
 }
 
 /* Estilização do Rodapé */
@@ -128,7 +148,7 @@ footer {
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
-/* Formulários e Inputs */
+/* Formulários e Inputs Gerais */
 form.grid-form {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -174,6 +194,41 @@ input[readonly] {
     background-color: #f1f5f9 !important;
     color: #64748b;
     cursor: not-allowed;
+}
+
+/* Layout dos Filtros de Gestão (3 Opções em Linha) */
+.grid-form-filtro {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    align-items: flex-end;
+    margin-bottom: 24px;
+}
+
+.campo-checkbox {
+    display: flex;
+    align-items: center;
+    height: 46px;
+    margin-bottom: 2px;
+}
+
+.container-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    color: #475569;
+    user-select: none;
+}
+
+.container-checkbox input[type="checkbox"] {
+    width: 20px !important;
+    height: 20px !important;
+    min-height: 20px !important;
+    cursor: pointer;
+    accent-color: var(--verde-principal);
 }
 
 .container-botao {
@@ -333,26 +388,6 @@ th {
     text-decoration: underline;
 }
 
-#telaPainelAdmin {
-    display: none;
-}
-
-.btn-sair-admin {
-    background-color: #ffffff;
-    color: #ef4444;
-    border: none;
-    font-weight: 700;
-    font-size: 14px;
-    padding: 10px 20px;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.btn-sair-admin:hover {
-    background-color: #fef2f2;
-}
-
 /* Responsividade Mobile */
 @media (max-width: 768px) {
     .header {
@@ -384,19 +419,12 @@ th {
         font-size: 22px;
     }
 
-    .btn-sair-admin {
-        width: 100%;
-        margin-top: 10px;
-        text-align: center;
-        padding: 12px;
-    }
-
     .card-conteudo {
         padding: 20px 14px;
         border-radius: 16px;
     }
 
-    form.grid-form, #formFiltroAdmin, .linha-funcionario {
+    form.grid-form, .grid-form-filtro, .linha-funcionario {
         display: flex !important;
         flex-direction: column !important;
         gap: 14px !important;

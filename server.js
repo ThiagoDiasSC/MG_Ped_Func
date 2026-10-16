@@ -62,16 +62,16 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-// 2. Rota para filtrar pedidos por intervalo de data/hora no Painel Admin / Relatório
+// 2. Rota para filtrar pedidos por intervalo de data/hora + Ped_Fat (1 ou 0)
 app.get('/api/pedidos/filtro', async (req, res) => {
-    const { inicio, fim } = req.query;
+    const { inicio, fim, faturado } = req.query;
 
     if (!inicio || !fim) {
         return res.status(400).json({ error: 'Informe a data/hora inicial e final.' });
     }
 
     try {
-        const query = `
+        let query = `
             SELECT 
                 "Id", 
                 "Num_Ped", 
@@ -82,13 +82,22 @@ app.get('/api/pedidos/filtro', async (req, res) => {
                 "Cod_Prod", 
                 "Tipo_Ped", 
                 "QTD_Ped", 
-                to_char("DT_Ped", 'DD/MM/YYYY HH24:MI:SS') AS "DT_Ped"
+                to_char("DT_Ped", 'DD/MM/YYYY HH24:MI:SS') AS "DT_Ped",
+                COALESCE("Ped_Fat", 0) AS "Ped_Fat"
             FROM "MG_Pedido"
             WHERE "DT_Ped" BETWEEN $1::timestamp AND $2::timestamp
-            ORDER BY "DT_Ped" ASC, "Num_Ped" ASC
         `;
 
-        const { rows } = await pool.query(query, [inicio, fim]);
+        const params = [inicio, fim];
+
+        // Se a caixa estiver marcada (faturado === 'true'), envia 1; se desmarcada, envia 0
+        const valorPedFat = faturado === 'true' ? 1 : 0;
+        params.push(valorPedFat);
+        query += ` AND COALESCE("Ped_Fat", 0) = $3`;
+
+        query += ` ORDER BY "DT_Ped" ASC, "Num_Ped" ASC`;
+
+        const { rows } = await pool.query(query, params);
         res.json(rows);
     } catch (err) {
         console.error('Erro ao buscar pedidos filtrados:', err.message);

@@ -11,7 +11,7 @@
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- SheetJS -->
+    <!-- SheetJS (Para exportar para Excel .xlsx) -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
     <!-- Style.css da pasta Layout -->
@@ -25,7 +25,6 @@
     <!-- TELA DE PAINEL ADMINISTRATIVO / RELATÓRIO -->
     <div class="container" id="telaPainelAdmin" style="display: block;">
 
-        <!-- Banner sem o botão de voltar interno -->
         <div class="banner-gestao">
             <div>
                 <div class="subtitulo-caixa-alta">Acompanhamento Estratégico</div>
@@ -36,7 +35,7 @@
         <div class="card-conteudo">
             <h3 style="margin-top:0; margin-bottom: 20px;">Filtros de Gestão</h3>
             
-            <form id="formFiltroAdmin" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 24px;">
+            <form id="formFiltroAdmin" class="grid-form-filtro">
                 <div class="campo-grupo">
                     <label for="dataHoraInicialAdmin">Data e Hora Inicial:</label>
                     <input type="datetime-local" id="dataHoraInicialAdmin" required>
@@ -45,6 +44,14 @@
                 <div class="campo-grupo">
                     <label for="dataHoraFinalAdmin">Data e Hora Final:</label>
                     <input type="datetime-local" id="dataHoraFinalAdmin" required>
+                </div>
+
+                <!-- Caixa de Seleção Pedido Faturado (Vincular a Ped_Fat 1/0) -->
+                <div class="campo-grupo campo-checkbox">
+                    <label class="container-checkbox">
+                        <input type="checkbox" id="filtroFaturado">
+                        <span class="label-text">Pedido Faturado</span>
+                    </label>
                 </div>
 
                 <div class="container-botao">
@@ -95,8 +102,6 @@
                 const headerRes = await fetch('Layout/Cabecalho/header.html');
                 if (headerRes.ok) {
                     document.getElementById('header-container').innerHTML = await headerRes.text();
-                    
-                    // Renderiza o utilizador logado e o botão Sair no canto superior direito
                     const nomeUsuario = localStorage.getItem('usuarioLogado') || 'Administrador';
                     renderizarHeaderUsuario(nomeUsuario);
                 }
@@ -125,7 +130,6 @@
             }
         }
 
-        // Ao clicar em Sair, apaga a sessão e volta à página de pedidos (index.html)
         function fazerLogout() {
             localStorage.removeItem('usuarioLogado');
             window.location.href = 'index.html';
@@ -150,6 +154,7 @@
             e.preventDefault();
             const inicio = document.getElementById('dataHoraInicialAdmin').value;
             const fim = document.getElementById('dataHoraFinalAdmin').value;
+            const faturado = document.getElementById('filtroFaturado').checked;
 
             if (new Date(inicio) > new Date(fim)) {
                 alert('Atenção: A data e hora inicial não pode ser maior do que a data e hora final.');
@@ -163,7 +168,7 @@
             containerExport.style.display = 'none';
 
             try {
-                const res = await fetch(`${API_BASE_URL}/api/pedidos/filtro?inicio=${encodeURIComponent(inicio)}&fim=${encodeURIComponent(fim)}`);
+                const res = await fetch(`${API_BASE_URL}/api/pedidos/filtro?inicio=${encodeURIComponent(inicio)}&fim=${encodeURIComponent(fim)}&faturado=${faturado}`);
                 pedidosFiltradosAtuais = await res.json();
 
                 if (!res.ok) throw new Error(pedidosFiltradosAtuais.error || 'Erro ao consultar pedidos.');
@@ -203,7 +208,7 @@
         function exportarCSV() {
             if (pedidosFiltradosAtuais.length === 0) return;
 
-            const cabecalhos = ['Num_Ped', 'DT_Ped', 'Cod_Func', 'Nome_Func', 'MG_Rev', 'Form_Pag', 'Cod_Prod', 'Tipo_Ped', 'QTD_Ped'];
+            const cabecalhos = ['Num_Ped', 'DT_Ped', 'Cod_Func', 'Nome_Func', 'MG_Rev', 'Form_Pag', 'Cod_Prod', 'Tipo_Ped', 'QTD_Ped', 'Ped_Fat'];
             let csvContent = '\uFEFF' + cabecalhos.join(';') + '\n';
 
             pedidosFiltradosAtuais.forEach(p => {
@@ -216,7 +221,8 @@
                     `"${p.Form_Pag}"`,
                     `"${p.Cod_Prod}"`,
                     `"${p.Tipo_Ped}"`,
-                    `"${p.QTD_Ped}"`
+                    `"${p.QTD_Ped}"`,
+                    `"${p.Ped_Fat}"`
                 ];
                 csvContent += linha.join(';') + '\n';
             });
@@ -243,7 +249,8 @@
                 'Forma de Pagamento': p.Form_Pag,
                 'Cód. Produto': p.Cod_Prod,
                 'Tipo': p.Tipo_Ped,
-                'Quantidade': p.QTD_Ped
+                'Quantidade': p.QTD_Ped,
+                'Faturado': p.Ped_Fat === 1 ? 'Sim' : 'Não'
             }));
 
             const worksheet = XLSX.utils.json_to_sheet(dadosExcel);
