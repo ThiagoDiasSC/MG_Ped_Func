@@ -205,6 +205,30 @@
             }
         });
 
+        // Função auxiliar para atualizar a coluna Ped_Fat para 1 no banco após exportar
+        async function marcarPedidosComoFaturados() {
+            if (pedidosFiltradosAtuais.length === 0) return;
+
+            const idsParaAtualizar = pedidosFiltradosAtuais.map(p => p.Id);
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/pedidos/faturar`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ids: idsParaAtualizar })
+                });
+
+                if (!res.ok) {
+                    const errData = await res.json();
+                    console.error('Erro ao faturar pedidos no banco:', errData.error);
+                } else {
+                    console.log('Pedidos faturados com sucesso (Ped_Fat = 1).');
+                }
+            } catch (error) {
+                console.error('Erro de conexão ao atualizar faturamento:', error);
+            }
+        }
+
         function exportarCSV() {
             if (pedidosFiltradosAtuais.length === 0) return;
 
@@ -222,7 +246,7 @@
                     `"${p.Cod_Prod}"`,
                     `"${p.Tipo_Ped}"`,
                     `"${p.QTD_Ped}"`,
-                    `"${p.Ped_Fat}"`
+                    `"1"` // No arquivo baixado reflete a atualização para 1
                 ];
                 csvContent += linha.join(';') + '\n';
             });
@@ -235,6 +259,9 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+
+            // Atualiza Ped_Fat = 1 no Supabase após baixar
+            marcarPedidosComoFaturados();
         }
 
         function exportarExcel() {
@@ -250,7 +277,7 @@
                 'Cód. Produto': p.Cod_Prod,
                 'Tipo': p.Tipo_Ped,
                 'Quantidade': p.QTD_Ped,
-                'Faturado': p.Ped_Fat === 1 ? 'Sim' : 'Não'
+                'Faturado': 'Sim' // No arquivo baixado reflete a atualização para 1
             }));
 
             const worksheet = XLSX.utils.json_to_sheet(dadosExcel);
@@ -258,6 +285,9 @@
             XLSX.utils.book_append_sheet(workbook, worksheet, 'Pedidos');
 
             XLSX.writeFile(workbook, `Pedidos_MegaGiro_${new Date().toISOString().slice(0,10)}.xlsx`);
+
+            // Atualiza Ped_Fat = 1 no Supabase após baixar
+            marcarPedidosComoFaturados();
         }
     </script>
 </body>

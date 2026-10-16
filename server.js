@@ -105,7 +105,30 @@ app.get('/api/pedidos/filtro', async (req, res) => {
     }
 });
 
-// 3. Rota para buscar os funcionários da tabela MG_Func
+// 3. Rota para atualizar Ped_Fat para 1 após exportação do relatório
+app.put('/api/pedidos/faturar', async (req, res) => {
+    const { ids } = req.body;
+
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+        return res.status(400).json({ error: 'Nenhum ID de pedido fornecido para atualização.' });
+    }
+
+    try {
+        const query = `
+            UPDATE "MG_Pedido" 
+            SET "Ped_Fat" = 1 
+            WHERE "Id" = ANY($1::int[])
+        `;
+        await pool.query(query, [ids]);
+
+        res.json({ message: 'Pedidos faturados com sucesso (Ped_Fat = 1).' });
+    } catch (err) {
+        console.error('Erro ao atualizar Ped_Fat na tabela MG_Pedido:', err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// 4. Rota para buscar os funcionários da tabela MG_Func
 app.get('/api/funcionarios', async (req, res) => {
     try {
         const query = 'SELECT "Nome_Func" AS nome, "Cod_Func" AS fun_cod FROM "MG_Func" ORDER BY "Nome_Func" ASC';
@@ -117,7 +140,7 @@ app.get('/api/funcionarios', async (req, res) => {
     }
 });
 
-// 4. Rota para buscar produtos da tabela MG_Produto
+// 5. Rota para buscar produtos da tabela MG_Produto
 app.get('/api/produtos', async (req, res) => {
     try {
         let query = `
@@ -157,7 +180,7 @@ app.get('/api/produtos', async (req, res) => {
     }
 });
 
-// 5. Rota para cadastrar o lote na tabela MG_Pedido (Insere Ped_Fat = 0 por padrão)
+// 6. Rota para cadastrar o lote na tabela MG_Pedido (Insere Ped_Fat = 0 por padrão)
 app.post('/api/registros', async (req, res) => {
     const { itens } = req.body;
 
