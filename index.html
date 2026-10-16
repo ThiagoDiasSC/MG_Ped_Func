@@ -178,7 +178,6 @@
                 if (headerRes.ok) {
                     document.getElementById('header-container').innerHTML = await headerRes.text();
                     
-                    // Verifica se já existe um utilizador autenticado
                     const nomeUsuario = localStorage.getItem('usuarioLogado');
                     if (nomeUsuario) {
                         renderizarHeaderUsuario(nomeUsuario);
@@ -199,8 +198,12 @@
             const container = document.getElementById('headerUserInfo');
             if (container) {
                 container.innerHTML = `
-                    <span class="user-name"><i class="fa-regular fa-user"></i> ${nome}</span>
-                    <button onclick="fazerLogout()" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
+                    <span class="user-name" style="color: #ffffff; font-weight: 600; margin-right: 12px;">
+                        <i class="fa-regular fa-user"></i> ${nome}
+                    </span>
+                    <button onclick="fazerLogout()" class="btn-logout">
+                        <i class="fa-solid fa-right-from-bracket"></i> Sair
+                    </button>
                 `;
             }
         }
@@ -251,13 +254,10 @@
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error || 'Erro de autenticação.');
 
-                // Guarda o nome do utilizador autenticado
                 const nomeUsuario = data.user.Nome_User || usuario;
                 localStorage.setItem('usuarioLogado', nomeUsuario);
 
                 fecharModalLogin();
-                
-                // Redireciona para o relatório
                 window.location.href = 'relatorio.html';
 
             } catch (error) {

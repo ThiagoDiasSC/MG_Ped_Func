@@ -157,7 +157,7 @@ app.get('/api/produtos', async (req, res) => {
     }
 });
 
-// 5. Rota para cadastrar o lote na tabela MG_Pedido
+// 5. Rota para cadastrar o lote na tabela MG_Pedido (Insere Ped_Fat = 0 por padrão)
 app.post('/api/registros', async (req, res) => {
     const { itens } = req.body;
 
@@ -192,9 +192,10 @@ app.post('/api/registros', async (req, res) => {
                 "QTD_Ped", 
                 "Val_Ped", 
                 "Num_Ped", 
+                "Ped_Fat",
                 "DT_Ped"
             ) 
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, (NOW() AT TIME ZONE 'America/Sao_Paulo'))
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, (NOW() AT TIME ZONE 'America/Sao_Paulo'))
         `;
 
         for (const item of itens) {
@@ -203,6 +204,7 @@ app.post('/api/registros', async (req, res) => {
             const codProdNum = parseInt(String(item.Cod_Prod || 0).replace(/\D/g, ''), 10) || 0;
             const qtdPedNum = parseInt(item.QTD_Ped || 1, 10);
             const valPedNum = parseFloat(String(item.Val_Ped || 0).replace(',', '.')) || 0;
+            const pedFatVal = 0; // Grava 0 por padrão no encerramento do pedido
 
             const values = [
                 atualId,
@@ -214,7 +216,8 @@ app.post('/api/registros', async (req, res) => {
                 String(item.Tipo_Ped || ''),
                 qtdPedNum,
                 valPedNum,
-                proximoNumPed
+                proximoNumPed,
+                pedFatVal
             ];
 
             await client.query(insertQuery, values);
