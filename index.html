@@ -136,7 +136,7 @@
 
     </div>
 
-    <!-- 2. MODAL DE LOGIN (ADMINISTRADORES) -->
+    <!-- 2. MODAL DE LOGIN -->
     <div class="modal-overlay" id="modalAdmin">
         <div class="modal-container">
             <button type="button" class="btn-voltar" onclick="fecharModalLogin()">← Voltar ao pedido</button>
@@ -177,6 +177,12 @@
                 const headerRes = await fetch('Layout/Cabecalho/header.html');
                 if (headerRes.ok) {
                     document.getElementById('header-container').innerHTML = await headerRes.text();
+                    
+                    // Verifica se já existe um utilizador autenticado
+                    const nomeUsuario = localStorage.getItem('usuarioLogado');
+                    if (nomeUsuario) {
+                        renderizarHeaderUsuario(nomeUsuario);
+                    }
                 }
 
                 const footerRes = await fetch('Layout/Rodape/footer.html');
@@ -188,6 +194,21 @@
             }
         }
         carregarLayout();
+
+        function renderizarHeaderUsuario(nome) {
+            const container = document.getElementById('headerUserInfo');
+            if (container) {
+                container.innerHTML = `
+                    <span class="user-name"><i class="fa-regular fa-user"></i> ${nome}</span>
+                    <button onclick="fazerLogout()" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
+                `;
+            }
+        }
+
+        function fazerLogout() {
+            localStorage.removeItem('usuarioLogado');
+            window.location.href = 'index.html';
+        }
 
         const API_BASE_URL = window.location.origin;
         const API_REGISTROS = `${API_BASE_URL}/api/registros`;
@@ -211,7 +232,6 @@
             document.getElementById('formLoginAdmin').reset();
         }
 
-        // Submissão do Login de Administrador -> Direciona para relatorio.html
         document.getElementById('formLoginAdmin').addEventListener('submit', async (e) => {
             e.preventDefault();
             const usuario = document.getElementById('adminUsuario').value;
@@ -231,9 +251,13 @@
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error || 'Erro de autenticação.');
 
+                // Guarda o nome do utilizador autenticado
+                const nomeUsuario = data.user.Nome_User || usuario;
+                localStorage.setItem('usuarioLogado', nomeUsuario);
+
                 fecharModalLogin();
                 
-                // Redirecionamento automático para a nova tela de relatórios
+                // Redireciona para o relatório
                 window.location.href = 'relatorio.html';
 
             } catch (error) {

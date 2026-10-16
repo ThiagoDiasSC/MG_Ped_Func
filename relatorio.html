@@ -11,7 +11,7 @@
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- SheetJS (Para exportar para Excel .xlsx) -->
+    <!-- SheetJS -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
     <!-- Style.css da pasta Layout -->
@@ -25,15 +25,11 @@
     <!-- TELA DE PAINEL ADMINISTRATIVO / RELATÓRIO -->
     <div class="container" id="telaPainelAdmin" style="display: block;">
 
+        <!-- Banner sem o botão de voltar interno -->
         <div class="banner-gestao">
             <div>
                 <div class="subtitulo-caixa-alta">Acompanhamento Estratégico</div>
                 <h1>Painel Administrativo - Relatórios</h1>
-            </div>
-            <div>
-                <button type="button" class="btn-sair-admin" onclick="sairParaPedidos()">
-                    <i class="fa-solid fa-arrow-left"></i> Voltar aos Pedidos
-                </button>
             </div>
         </div>
 
@@ -94,12 +90,15 @@
     <div id="footer-container"></div>
 
     <script>
-        // Carrega o Cabeçalho e Rodapé dinamicamente da pasta Layout
         async function carregarLayout() {
             try {
                 const headerRes = await fetch('Layout/Cabecalho/header.html');
                 if (headerRes.ok) {
                     document.getElementById('header-container').innerHTML = await headerRes.text();
+                    
+                    // Renderiza o utilizador logado e o botão Sair no canto superior direito
+                    const nomeUsuario = localStorage.getItem('usuarioLogado') || 'Administrador';
+                    renderizarHeaderUsuario(nomeUsuario);
                 }
 
                 const footerRes = await fetch('Layout/Rodape/footer.html');
@@ -112,14 +111,29 @@
         }
         carregarLayout();
 
+        function renderizarHeaderUsuario(nome) {
+            const container = document.getElementById('headerUserInfo');
+            if (container) {
+                container.innerHTML = `
+                    <span class="user-name" style="color: #ffffff; font-weight: 600; margin-right: 12px;">
+                        <i class="fa-regular fa-user"></i> ${nome}
+                    </span>
+                    <button type="button" onclick="fazerLogout()" class="btn-logout">
+                        <i class="fa-solid fa-right-from-bracket"></i> Sair
+                    </button>
+                `;
+            }
+        }
+
+        // Ao clicar em Sair, apaga a sessão e volta à página de pedidos (index.html)
+        function fazerLogout() {
+            localStorage.removeItem('usuarioLogado');
+            window.location.href = 'index.html';
+        }
+
         const API_BASE_URL = window.location.origin;
         let pedidosFiltradosAtuais = [];
 
-        function sairParaPedidos() {
-            window.location.href = '/';
-        }
-
-        // Preenche automaticamente as datas de hoje (início do dia até o momento)
         document.addEventListener('DOMContentLoaded', () => {
             const agora = new Date();
             const opcoesData = { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit' };
@@ -132,7 +146,6 @@
             document.getElementById('dataHoraFinalAdmin').value = `${dataStr}T${horaStr}`;
         });
 
-        // Evento de submissão do Filtro de Pedidos
         document.getElementById('formFiltroAdmin').addEventListener('submit', async (e) => {
             e.preventDefault();
             const inicio = document.getElementById('dataHoraInicialAdmin').value;
@@ -187,7 +200,6 @@
             }
         });
 
-        // Exportação para CSV
         function exportarCSV() {
             if (pedidosFiltradosAtuais.length === 0) return;
 
@@ -219,7 +231,6 @@
             document.body.removeChild(link);
         }
 
-        // Exportação para Excel (.xlsx)
         function exportarExcel() {
             if (pedidosFiltradosAtuais.length === 0) return;
 
